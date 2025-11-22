@@ -85,7 +85,7 @@
       background-position: center;
       background-size: cover;
       background-repeat: no-repeat;
-      opacity: 0;
+      opacity: 0.70;
       transform: scale(1.02);
       transition: opacity 1200ms ease-in-out, transform 800ms ease;
       will-change: opacity, transform;
@@ -111,7 +111,7 @@
     /* Respect prefers-reduced-motion: disable animation and show only first image */
     @media (prefers-reduced-motion: reduce) {
       .bg-carousel .slide { transition: none !important; opacity: 0 !important; }
-      .bg-carousel .slide:first-child { opacity: 0.28 !important; }
+      .bg-carousel .slide:first-child { opacity: 0.58 !important; }
     }
 
     /* Make sure main content stacks above carousel */
@@ -621,5 +621,6 @@ ls -l assets.LNPG
 
 </body>
 </html>
+
 
 
