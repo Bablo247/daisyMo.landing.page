@@ -38,7 +38,7 @@
             background: '#F8FAFC',
             surface: '#FFFFFF',
             outline: 'rgba(0,0,0,0.08)',
-            blueAccent: '#DBE2E9',
+            blueAccent: '#D7D2CB',
             grayText: '#111111'
           },
           boxShadow: {
@@ -69,6 +69,53 @@
 
     /* GA consent banner */
     #consentBanner { position: fixed; bottom: 18px; left: 18px; right: 18px; max-width: 800px; margin: 0 auto; z-index: 80; }
+
+    /* Background carousel (new) */
+    .bg-carousel {
+      position: absolute;
+      inset: 0;
+      z-index: 0; /* behind main content */
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .bg-carousel .slide {
+      position: absolute;
+      inset: 0;
+      background-position: center;
+      background-size: cover;
+      background-repeat: no-repeat;
+      opacity: 0;
+      transform: scale(1.02);
+      transition: opacity 1200ms ease-in-out, transform 800ms ease;
+      will-change: opacity, transform;
+      filter: saturate(0.96) contrast(0.92);
+    }
+
+    /* mild overlay so content stays readable */
+    .bg-carousel::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(248,250,252,0.12), rgba(255,255,255,0.18));
+      pointer-events: none;
+    }
+
+    /* visible slide */
+    .bg-carousel .slide.is-active {
+      opacity: 0.28; /* mild opacity, tweak if needed */
+      transform: scale(1);
+      z-index: 0;
+    }
+
+    /* Respect prefers-reduced-motion: disable animation and show only first image */
+    @media (prefers-reduced-motion: reduce) {
+      .bg-carousel .slide { transition: none !important; opacity: 0 !important; }
+      .bg-carousel .slide:first-child { opacity: 0.28 !important; }
+    }
+
+    /* Make sure main content stacks above carousel */
+    main.relative { position: relative; z-index: 1; }
   </style>
 
   <!-- JSON-LD Organization schema -->
@@ -143,7 +190,16 @@
     </div>
   </header>
 
-  <main id="main" class="mt-6">
+  <main id="main" class="mt-6 relative">
+    <!-- BACKGROUND CAROUSEL (positioned behind content) -->
+    <div class="bg-carousel" aria-hidden="true">
+      <!-- Replace with your actual images (kept as jpg/png per your request) -->
+      <div class="slide is-active" style="background-image: url('assets.LNPG/bg1.jpg');"></div>
+      <div class="slide"          style="background-image: url('assets.LNPG/bg2.jpg');"></div>
+      <div class="slide"          style="background-image: url('assets.LNPG/bg3.jpg');"></div>
+      <div class="slide"          style="background-image: url('assets.LNPG/bg4.jpg');"></div>
+    </div>
+
     <section id="intro" class="relative">
       <div class="max-w-7xl mx-auto px-4 md:px-6 py-16 md:py-24 grid md:grid-cols-2 gap-12 items-center">
         <div>
@@ -462,7 +518,7 @@
           `DESCRIPTION:${eventDesc}`,
           `LOCATION:${eventLocation}`,'END:VEVENT','END:VCALENDAR'
         ];
-        const blob = new Blob([icsLines.join('
+        const blob = new Blob([icsLines.join('\
 ')], { type: 'text/calendar;charset=utf-8' });
         const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'daisymo-open-house.ics'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000);
       });
@@ -501,9 +557,52 @@ cwebp -q 82 "/mnt/data/WhatsApp Image 2025-11-21 at 09.30.10_0359c969.jpg" -o as
 ls -l assets.LNPG
 </pre>
 
+  <!-- Background carousel JS (keeps images as non-webp as requested) -->
+  <script>
+  (function(){
+    const carousel = document.querySelector('.bg-carousel');
+    if(!carousel) return;
+
+    const slides = Array.from(carousel.querySelectorAll('.slide'));
+    if(slides.length <= 1) return;
+
+    // config
+    const intervalMs = 6000; // change slide every 6s
+    let idx = 0;
+    let timer = null;
+
+    // ensure only one active initially
+    slides.forEach((s,i)=> s.classList.toggle('is-active', i===0));
+
+    // respects user preference to reduce motion
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function goTo(next){
+      slides[idx].classList.remove('is-active');
+      slides[next].classList.add('is-active');
+      idx = next;
+    }
+
+    function start(){
+      if(reduce) return; // do not auto-rotate if user prefers reduced motion
+      timer = setInterval(()=> {
+        const next = (idx + 1) % slides.length;
+        goTo(next);
+      }, intervalMs);
+    }
+
+    function stop(){
+      if(timer) { clearInterval(timer); timer = null; }
+    }
+
+    // pause on page hidden to save CPU
+    document.addEventListener('visibilitychange', ()=> {
+      if(document.hidden) stop(); else start();
+    });
+
+    start();
+  })();
+  </script>
+
 </body>
 </html>
-
-
-
-
