@@ -191,41 +191,54 @@
   </header>
 
   <main id="main" class="mt-6 relative">
-    <!-- BACKGROUND CAROUSEL (positioned behind content) -->
+    <!-- BACKGROUND CAROUSEL (positioned behind content) 
     <div class="bg-carousel" aria-hidden="true">
-      <!-- Replace with your actual images (kept as jpg/png per your request) -->
+      Replace with your actual images (kept as jpg/png per your request)
       <div class="slide is-active" style="background-image: url('assets.LNPG/a8a63ff5-3ed2-44f1-a124-7430ced43885.jpg');"></div>
       <div class="slide"          style="background-image: url('assets.LNPG/WhatsApp Image 2025-11-19 at 17.34.32_9fe16f1e.jpg');"></div>
       <div class="slide"          style="background-image: url('assets.LNPG/WhatsApp Image 2025-11-19 at 17.34.33_a5cc0da1.jpg');"></div>
       <div class="slide"          style="background-image: url('assets.LNPG/WhatsApp Image 2025-11-19 at 17.34.35_344561ca.jpg');"></div>
       <div class="slide"          style="background-image: url('assets.LNPG/2dff7f6f-9a87-445b-beb9-707355642fd3.jpg');"></div>
       <div class="slide"          style="background-image: url('assets.LNPG/c364c6a1-8435-4395-a662-c4b1288b5ca1.jpg');"></div>
+    </div>  -->
+
+<section id="intro" class="relative">
+
+  <!-- BACKGROUND CAROUSEL (only for this section) -->
+  <div class="bg-carousel absolute inset-0" aria-hidden="true">
+    <!-- your provided image paths -->
+    <div class="slide is-active" style="background-image: url('assets.LNPG/a8a63ff5-3ed2-44f1-a124-7430ced43885.jpg');"></div>
+    <div class="slide"          style="background-image: url('assets.LNPG/WhatsApp Image 2025-11-19 at 17.34.32_9fe16f1e.jpg');"></div>
+    <div class="slide"          style="background-image: url('assets.LNPG/WhatsApp Image 2025-11-19 at 17.34.33_a5cc0da1.jpg');"></div>
+    <div class="slide"          style="background-image: url('assets.LNPG/WhatsApp Image 2025-11-19 at 17.34.35_344561ca.jpg');"></div>
+    <div class="slide"          style="background-image: url('assets.LNPG/2dff7f6f-9a87-445b-beb9-707355642fd3.jpg');"></div>
+    <div class="slide"          style="background-image: url('assets.LNPG/c364c6a1-8435-4395-a662-c4b1288b5ca1.jpg');"></div>
+  </div>
+
+  <div class="relative z-10 max-w-7xl mx-auto px-4 md:px-6 py-16 md:py-24 grid md:grid-cols-2 gap-12 items-center">
+    <div>
+      <h1 class="font-display text-3xl md:text-5xl font-semibold leading-tight text-gray-900 tracking-tight">
+        One Studio, Two Spaces — <span class="text-blueAccent">DaisyMo Collective</span> &amp; <span class="text-blueAccent">Self by DMC</span>
+      </h1>
+      <p class="mt-5 text-gray-800 max-w-xl text-base leading-relaxed">
+        Book premium professional sessions, rent our creative &amp; podcast studios and gear, or explore our DIY self-portrait booths.
+      </p>
+      <div class="mt-8 flex flex-wrap items-center gap-3">
+        <a href="#branches" class="px-5 py-3 rounded-xl bg-white border border-outline text-gray-900 hover:bg-gray-100 transition">Explore Services</a>
+      </div>
     </div>
 
-    <section id="intro" class="relative">
-      <div class="max-w-7xl mx-auto px-4 md:px-6 py-16 md:py-24 grid md:grid-cols-2 gap-12 items-center">
-        <div>
-          <h1 class="font-display text-3xl md:text-5xl font-semibold leading-tight text-gray-900 tracking-tight">
-            One Studio, Two Spaces — <span class="text-blueAccent">DaisyMo Collective</span> &amp; <span class="text-blueAccent">Self by DMC</span>
-          </h1>
-          <p class="mt-5 text-gray-800 max-w-xl text-base leading-relaxed">
-            Book premium professional sessions, rent our creative &amp; podcast studios and gear, or explore our DIY self-portrait booths.
-          </p>
-          <div class="mt-8 flex flex-wrap items-center gap-3">
-            <a href="#branches" class="px-5 py-3 rounded-xl bg-white border border-outline text-gray-900 hover:bg-gray-100 transition">Explore Services</a>
-          </div>
-        </div>
-
-        <div class="relative">
-          <div class="aspect-[4/3] rounded-3xl overflow-hidden ring-1 ring-black/10 shadow-elevated">
-            <picture>
-              <source srcset="assets.LNPG/WhatsApp Image 2025-11-21 at 09.27.46_84f86004.jpg" type="image/webp">
-              <img class="w-full h-full object-cover" src="assets.LNPG/WhatsApp Image 2025-11-21 at 09.27.46_84f86004.jpg" alt="Podcast studio with microphones and lighting setup" loading="lazy" width="1200" height="900"/>
-            </picture>
-          </div>
-        </div>
+    <div class="relative">
+      <div class="aspect-[4/3] rounded-3xl overflow-hidden ring-1 ring-black/10 shadow-elevated">
+        <picture>
+          <source srcset="assets.LNPG/WhatsApp Image 2025-11-21 at 09.27.46_84f86004.jpg" type="image/webp">
+          <img class="w-full h-full object-cover" src="assets.LNPG/WhatsApp Image 2025-11-21 at 09.27.46_84f86004.jpg" alt="Podcast studio with microphones and lighting setup" loading="lazy" width="1200" height="900"/>
+        </picture>
       </div>
-    </section>
+    </div>
+  </div>
+
+</section>
 
     <section id="branches" class="relative py-16 md:py-24 bg-gray-50">
       <div class="max-w-7xl mx-auto px-4 md:px-6">
@@ -608,4 +621,5 @@ ls -l assets.LNPG
 
 </body>
 </html>
+
 
