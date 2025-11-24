@@ -71,41 +71,28 @@
     /* GA consent banner */
     #consentBanner { position: fixed; bottom: 18px; left: 18px; right: 18px; max-width: 800px; margin: 0 auto; z-index: 80; }
 
-    /***** Carousel Scoped to RIGHT COLUMN + BLEED TO VIEWPORT EDGE *****/
+    /***** Carousel Scoped to RIGHT COLUMN *****/
     /* make grid columns stretch to same height so right column can fill vertically */
     .intro-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: stretch; }
-
-    /* ensure section allows overflow so carousel can bleed */
-    #intro { position: relative; overflow: visible; }
 
     /* the right column wrapper */
     .intro-right { position: relative; overflow: visible; min-height: 100%; height: 100%; display: flex; align-items: stretch; }
 
-    /*
-      The trick for "bleed to viewport right edge":
-      - The centered container (max-w-7xl) usually has side gutters.
-      - (100vw - 100%) gives the total extra width (both gutters combined).
-      - Half of that is the right gutter we must cover.
-      - We place the carousel to the right of the container by using a negative right offset equal to half the gutters,
-        and set its width to (50% of the container) + the right gutter so it reaches the viewport edge.
-      This calc is robust across responsive widths because it uses percentages relative to the container.
-    */
+    /* carousel lives inside the right column and fills it (top -> bottom of that column) */
     .intro-right .intro-carousel {
       position: absolute;
       top: 0;
+      right: 0;
       bottom: 0;
-      /* move the carousel outwards to the viewport right edge */
-      right: calc((100vw - 100%) / -2);
-      /* width = half the container + the right gutter so the carousel reaches viewport edge */
-      width: calc(50% + (100vw - 100%) / 2);
-      z-index: 0;
+      left: 0;
+      z-index: 0; /* behind right-column content */
       pointer-events: none;
     }
 
     /*
       Reduced transition duration and smoother easing using cubic-bezier.
       Opacity toggles from 0 -> 1; transform scales slightly for subtle depth.
-      Active slide gets higher z-index for clean crossfade.
+      Note: active slide has higher z-index so cross-fades are clean.
     */
     .intro-right .intro-carousel .slide {
       position: absolute;
@@ -120,7 +107,7 @@
       z-index: 0;
     }
 
-    /* subtle overlay inside the right column to keep the UI readable */
+    /* subtle overlay inside the right column to keep text readable */
     .intro-right .intro-carousel::after {
       content: "";
       position: absolute;
@@ -130,7 +117,7 @@
       z-index: 1;
     }
 
-    /* visible slide sits above the overlay and other slides */
+    /* visible slide sits above the others */
     .intro-right .intro-carousel .slide.is-active {
       opacity: 1;
       transform: scale(1);
@@ -156,13 +143,6 @@
 
     /* responsive tweaks so images are adaptive and the carousel remains full height on smaller screens */
     @media (max-width: 1024px) {
-      .intro-right .intro-carousel {
-        /* when stacked, just fill the column width */
-        position: absolute;
-        left: 0;
-        right: 0;
-        width: 100%;
-      }
       .intro-right .intro-carousel .slide { background-position: center 20%; }
       .intro-right .intro-carousel::after { background: rgba(0,0,0,0.36); }
       .intro-grid { grid-template-columns: 1fr; } /* on smaller screens stack columns */
@@ -258,7 +238,7 @@
   </header>
 
   <main id="main" class="mt-6 relative">
-    <section id="intro" class="relative overflow-visible">
+    <section id="intro" class="relative">
       <div class="max-w-7xl mx-auto px-4 md:px-6 py-16 md:py-24">
         <!-- use the helper grid class so columns stretch equally -->
         <div class="intro-grid">
@@ -276,10 +256,10 @@
             </div>
           </div>
 
-          <!-- RIGHT: carousel confined to this column and stretched to bottom of section, bleeding to viewport right edge -->
+          <!-- RIGHT: carousel confined to this column and stretched to bottom of column -->
           <div class="intro-right">
 
-            <!-- CAROUSEL: fills the right column area (kept images in original formats); bleeds to viewport right -->
+            <!-- CAROUSEL: fills the right column area (kept images in original formats) -->
             <div class="intro-carousel" aria-hidden="true">
               <div class="slide is-active" style="background-image: url('assets.LNPG/a8a63ff5-3ed2-44f1-a124-7430ced43885.jpg');"></div>
               <div class="slide"          style="background-image: url('assets.LNPG/WhatsApp Image 2025-11-19 at 17.34.32_9fe16f1e.jpg');"></div>
@@ -644,6 +624,7 @@
 
     function goTo(next){
       if(next === idx) return;
+      // fade current down, bring next up
       slides[idx].classList.remove('is-active');
       slides[next].classList.add('is-active');
       idx = next;
@@ -667,14 +648,12 @@
       if(document.hidden) stop(); else start();
     });
 
-    // start after load
+    // start after load (and on resize to ensure height)
     window.addEventListener('load', start);
-
-    // ensure carousel recalculates width/position if viewport changes
     window.addEventListener('resize', () => {
-      // no action needed, CSS calc keeps it responsive, but keeping this for future adjustments
+      // if layout changed (columns stacked) we ensure slides still fill container
+      slides.forEach(s => { s.style.height = ''; });
     });
-
     start();
   })();
   </script>
