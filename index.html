@@ -72,23 +72,27 @@
     #consentBanner { position: fixed; bottom: 18px; left: 18px; right: 18px; max-width: 800px; margin: 0 auto; z-index: 80; }
 
     /***** Carousel Scoped to RIGHT COLUMN *****/
-    /* the right column wrapper */
-    .intro-right { position: relative; overflow: visible; }
+    /* make grid columns stretch to same height so right column can fill vertically */
+    .intro-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: stretch; }
 
-    /* carousel lives inside the right column and fills it */
+    /* the right column wrapper */
+    .intro-right { position: relative; overflow: visible; min-height: 100%; height: 100%; display: flex; align-items: stretch; }
+
+    /* carousel lives inside the right column and fills it (top -> bottom of that column) */
     .intro-right .intro-carousel {
       position: absolute;
       top: 0;
       right: 0;
       bottom: 0;
       left: 0;
-      z-index: 0; /* behind the right-column content */
+      z-index: 0; /* behind right-column content */
       pointer-events: none;
     }
 
     /*
       Reduced transition duration and smoother easing using cubic-bezier.
       Opacity toggles from 0 -> 1; transform scales slightly for subtle depth.
+      Note: active slide has higher z-index so cross-fades are clean.
     */
     .intro-right .intro-carousel .slide {
       position: absolute;
@@ -100,57 +104,61 @@
       transform: scale(1.02);
       transition: opacity 420ms cubic-bezier(.22,.8,.1,1), transform 420ms cubic-bezier(.22,.8,.1,1);
       will-change: opacity, transform;
+      z-index: 0;
     }
 
-    /* subtle overlay inside the right column */
+    /* subtle overlay inside the right column to keep text readable */
     .intro-right .intro-carousel::after {
       content: "";
       position: absolute;
       inset: 0;
-      background: rgba(0,0,0,0.32); /* adjust darkness */
+      background: rgba(0,0,0,0.28); /* tweak darkness to taste */
       pointer-events: none;
       z-index: 1;
     }
 
-    /* visible slide */
+    /* visible slide sits above the others */
     .intro-right .intro-carousel .slide.is-active {
       opacity: 1;
       transform: scale(1);
-      z-index: 0;
+      z-index: 2;
     }
 
-    /* ensure the right-column foreground content (card) sits above the carousel */
-    .intro-right .right-foreground { position: relative; z-index: 2; background: transparent; }
+    /* ensure the right-column foreground content (card) sits above the carousel overlay */
+    .intro-right .right-foreground { position: relative; z-index: 3; background: transparent; display:flex; align-items:center; justify-content:center; }
 
-    /* we keep an empty card to preserve spacing but without the image */
+    /* the empty card now fills the whole column height (no fixed aspect) */
     .right-foreground .empty-card {
       width: 100%;
       height: 100%;
-      min-height: 320px;
+      min-height: 360px;
       border-radius: 1rem;
-      background: transparent; /* let carousel show through */
+      background: rgba(255,255,255,0.00); /* fully transparent so carousel shows through */
       box-shadow: 0 8px 30px -10px rgba(0,0,0,0.12);
       border: 1px solid rgba(0,0,0,0.04);
     }
 
-    /* keep left text unaffected — give it a plain background */
-    .intro-left { background: transparent; z-index: 3; position: relative; }
+    /* keep left text unaffected — plain background and top stacking */
+    .intro-left { background: transparent; z-index: 4; position: relative; }
 
-    /* for small screens tweak the focus and overlay */
+    /* responsive tweaks so images are adaptive and the carousel remains full height on smaller screens */
     @media (max-width: 1024px) {
       .intro-right .intro-carousel .slide { background-position: center 20%; }
-      .intro-right .intro-carousel::after { background: rgba(0,0,0,0.40); }
+      .intro-right .intro-carousel::after { background: rgba(0,0,0,0.36); }
+      .intro-grid { grid-template-columns: 1fr; } /* on smaller screens stack columns */
+      .intro-right { order: 2; min-height: 300px; }
     }
+
     @media (max-width: 640px) {
       .intro-right .intro-carousel::after { background: rgba(0,0,0,0.46); }
-      /* optionally hide the carousel on tiny screens to save bandwidth */
-      /* .intro-right .intro-carousel { display: none; } */
+      /* optionally hide the carousel on tiny screens to save bandwidth:
+         .intro-right .intro-carousel { display: none; } */
     }
 
     /* Respect reduced motion */
     @media (prefers-reduced-motion: reduce) {
       .intro-right .intro-carousel .slide { transition: none !important; opacity: 0 !important; }
-      .intro-right .intro-carousel .slide:first-child { opacity: 1 !important; }
+      .intro-right .intro-carousel .slide:first-child { opacity: 1 !important; z-index: 2 !important; }
     }
 
     /* ensure stacking elsewhere remains sane */
@@ -231,40 +239,43 @@
 
   <main id="main" class="mt-6 relative">
     <section id="intro" class="relative">
-      <div class="max-w-7xl mx-auto px-4 md:px-6 py-16 md:py-24 grid md:grid-cols-2 gap-12 items-center">
+      <div class="max-w-7xl mx-auto px-4 md:px-6 py-16 md:py-24">
+        <!-- use the helper grid class so columns stretch equally -->
+        <div class="intro-grid">
 
-        <!-- LEFT: plain text column -->
-        <div class="intro-left">
-          <h1 class="font-display text-3xl md:text-5xl font-semibold leading-tight text-gray-900 tracking-tight">
-            One Studio, Two Spaces — <span class="text-blueAccent">DaisyMo Collective</span> &amp; <span class="text-blueAccent">Self by DMC</span>
-          </h1>
-          <p class="mt-5 text-gray-800 max-w-xl text-base leading-relaxed">
-            Book premium professional sessions, rent our creative &amp; podcast studios and gear, or explore our DIY self-portrait booths.
-          </p>
-          <div class="mt-8 flex flex-wrap items-center gap-3">
-            <a href="#branches" class="px-5 py-3 rounded-xl bg-white border border-outline text-gray-900 hover:bg-gray-100 transition">Explore Services</a>
-          </div>
-        </div>
-
-        <!-- RIGHT: carousel confined to this column, with empty foreground card so carousel shows through -->
-        <div class="intro-right">
-
-          <!-- CAROUSEL: fills the right column area (kept images in original formats) -->
-          <div class="intro-carousel" aria-hidden="true">
-            <div class="slide is-active" style="background-image: url('assets.LNPG/a8a63ff5-3ed2-44f1-a124-7430ced43885.jpg');"></div>
-            <div class="slide"          style="background-image: url('assets.LNPG/WhatsApp Image 2025-11-19 at 17.34.32_9fe16f1e.jpg');"></div>
-            <div class="slide"          style="background-image: url('assets.LNPG/WhatsApp Image 2025-11-19 at 17.34.33_a5cc0da1.jpg');"></div>
-            <div class="slide"          style="background-image: url('assets.LNPG/WhatsApp Image 2025-11-19 at 17.34.35_344561ca.jpg');"></div>
-            <div class="slide"          style="background-image: url('assets.LNPG/2dff7f6f-9a87-445b-beb9-707355642fd3.jpg');"></div>
-            <div class="slide"          style="background-image: url('assets.LNPG/WhatsApp Image 2025-11-21 at 09.27.46_84f86004.jpg');"></div>
-            <div class="slide"          style="background-image: url('assets.LNPG/c364c6a1-8435-4395-a662-c4b1288b5ca1.jpg');"></div>
+          <!-- LEFT: plain text column -->
+          <div class="intro-left">
+            <h1 class="font-display text-3xl md:text-5xl font-semibold leading-tight text-gray-900 tracking-tight">
+              One Studio, Two Spaces — <span class="text-blueAccent">DaisyMo Collective</span> &amp; <span class="text-blueAccent">Self by DMC</span>
+            </h1>
+            <p class="mt-5 text-gray-800 max-w-xl text-base leading-relaxed">
+              Book premium professional sessions, rent our creative &amp; podcast studios and gear, or explore our DIY self-portrait booths.
+            </p>
+            <div class="mt-8 flex flex-wrap items-center gap-3">
+              <a href="#branches" class="px-5 py-3 rounded-xl bg-white border border-outline text-gray-900 hover:bg-gray-100 transition">Explore Services</a>
+            </div>
           </div>
 
-          <!-- Empty foreground card (keeps layout and aspect ratio but no image) -->
-          <div class="right-foreground">
-            <div class="empty-card aspect-[4/3] rounded-3xl overflow-hidden"></div>
-          </div>
+          <!-- RIGHT: carousel confined to this column and stretched to bottom of column -->
+          <div class="intro-right">
 
+            <!-- CAROUSEL: fills the right column area (kept images in original formats) -->
+            <div class="intro-carousel" aria-hidden="true">
+              <div class="slide is-active" style="background-image: url('assets.LNPG/a8a63ff5-3ed2-44f1-a124-7430ced43885.jpg');"></div>
+              <div class="slide"          style="background-image: url('assets.LNPG/WhatsApp Image 2025-11-19 at 17.34.32_9fe16f1e.jpg');"></div>
+              <div class="slide"          style="background-image: url('assets.LNPG/WhatsApp Image 2025-11-19 at 17.34.33_a5cc0da1.jpg');"></div>
+              <div class="slide"          style="background-image: url('assets.LNPG/WhatsApp Image 2025-11-19 at 17.34.35_344561ca.jpg');"></div>
+              <div class="slide"          style="background-image: url('assets.LNPG/2dff7f6f-9a87-445b-beb9-707355642fd3.jpg');"></div>
+              <div class="slide"          style="background-image: url('assets.LNPG/WhatsApp Image 2025-11-21 at 09.27.46_84f86004.jpg');"></div>
+              <div class="slide"          style="background-image: url('assets.LNPG/c364c6a1-8435-4395-a662-c4b1288b5ca1.jpg');"></div>
+            </div>
+
+            <!-- Empty foreground card (keeps layout but stretches to full column height) -->
+            <div class="right-foreground">
+              <div class="empty-card rounded-3xl overflow-hidden"></div>
+            </div>
+
+          </div>
         </div>
       </div>
     </section>
@@ -317,7 +328,7 @@
       <div class="bg-white rounded-3xl overflow-hidden shadow-xl border border-gray-200">
         <div class="md:flex">
 
-          <!-- LEFT IMAGE (webp source) -->
+          <!-- LEFT IMAGE -->
           <div class="md:w-1/2">
             <picture>
               <source srcset="assets.LNPG/WhatsApp Image 2025-11-19 at 17.34.33_a5cc0da1.jpg" type="image/webp">
@@ -585,7 +596,7 @@
     showConsent();
   </script>
 
-  <!-- Carousel JS: targets slides inside .intro-right; 2s rotation -->
+  <!-- Carousel JS: targets slides inside .intro-right; 2s rotation; improved z-index behavior -->
   <script>
   (function(){
     const carousel = document.querySelector('.intro-right .intro-carousel');
@@ -598,11 +609,10 @@
     let idx = 0;
     let timer = null;
 
-    // init
+    // init: ensure exactly one active
     slides.forEach((s,i) => {
       s.classList.toggle('is-active', i === 0);
-      s.style.zIndex = i === 0 ? '0' : '0';
-      // preload backgrounds
+      // preload background image to avoid flicker
       const bg = s.style.backgroundImage.replace(/url\(|\)|"/g, '');
       if(bg) {
         const img = new Image();
@@ -614,6 +624,7 @@
 
     function goTo(next){
       if(next === idx) return;
+      // fade current down, bring next up
       slides[idx].classList.remove('is-active');
       slides[next].classList.add('is-active');
       idx = next;
@@ -632,14 +643,21 @@
       if(timer) { clearInterval(timer); timer = null; }
     }
 
+    // pause when page hidden (saves CPU), resume when visible
     document.addEventListener('visibilitychange', ()=> {
       if(document.hidden) stop(); else start();
     });
 
+    // start after load (and on resize to ensure height)
     window.addEventListener('load', start);
+    window.addEventListener('resize', () => {
+      // if layout changed (columns stacked) we ensure slides still fill container
+      slides.forEach(s => { s.style.height = ''; });
+    });
     start();
   })();
   </script>
 
 </body>
 </html>
+
