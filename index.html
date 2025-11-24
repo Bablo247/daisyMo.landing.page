@@ -71,41 +71,54 @@
     /* GA consent banner */
     #consentBanner { position: fixed; bottom: 18px; left: 18px; right: 18px; max-width: 800px; margin: 0 auto; z-index: 80; }
 
-    /***** Carousel Scoped to RIGHT COLUMN + SLOWER, SMOOTH TRANSITION *****/
+    /***** Carousel Scoped to RIGHT COLUMN, BLEED LEFT, MAINTAIN ASPECT RATIO *****/
+    :root { --carousel-bleed: 220px; --carousel-aspect: 4 / 3; }
+
     .intro-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: stretch; }
     #intro { position: relative; overflow: visible; }
     .intro-right { position: relative; overflow: visible; min-height: 100%; height: 100%; display: flex; align-items: stretch; }
 
-    /* carousel fills the right column and can bleed to the viewport edge */
+    /* Carousel container — we'll let it visually bleed left into the text column and also to right viewport edge */
     .intro-right .intro-carousel {
       position: absolute;
       top: 0;
-      right: calc((100vw - 100%) / -2); /* bleed right */
-      bottom: 0;
-      width: calc(50% + (100vw - 100%) / 2);
+      right: 0;
+      /* shift leftwards by the bleed so the image extends into the left column */
+      left: calc(-1 * var(--carousel-bleed));
+      height: 100%;
       z-index: 0;
       pointer-events: none;
+      overflow: visible;
+      display: block;
     }
 
     /*
-      Increase transition duration for a smoother fade (higher "yield" — images hang longer and crossfade more gently)
-      - crossfade opacity over 900ms
-      - transform scale over 900ms
-      - we also increase interval in JS (below) so slides change slower
+      Each slide will maintain a consistent aspect ratio (using the CSS aspect-ratio property)
+      and cover its box with background-size: cover (keeps image proportion)
+      To allow slides to "bleed" horizontally while preserving the aspect, the slide width is calculated
+      to be the column width plus the bleed. On larger screens the visual will extend into the left column.
     */
     .intro-right .intro-carousel .slide {
       position: absolute;
-      inset: 0;
+      top: 50%;
+      left: 50%;
+      /* slide base width is 100% of the right column plus bleed on left */
+      width: calc(100% + var(--carousel-bleed));
+      /* use translate to center the slide box; vertical centering keeps aspect ratio maintained */
+      transform: translate(-50%, -50%) scale(1.02);
+      aspect-ratio: var(--carousel-aspect);
       background-position: center center;
-      background-size: cover;
+      background-size: cover; /* maintain original image aspect */
       background-repeat: no-repeat;
       opacity: 0;
-      transform: scale(1.02);
       transition: opacity 900ms cubic-bezier(.22,.8,.1,1), transform 900ms cubic-bezier(.22,.8,.1,1);
       will-change: opacity, transform;
       z-index: 0;
+      border-radius: 0.75rem;
+      box-shadow: 0 8px 30px -12px rgba(0,0,0,0.18);
     }
 
+    /* overlay so text/readability remains good */
     .intro-right .intro-carousel::after {
       content: "";
       position: absolute;
@@ -113,48 +126,43 @@
       background: rgba(0,0,0,0.28);
       pointer-events: none;
       z-index: 1;
+      border-radius: 0.75rem;
     }
 
     .intro-right .intro-carousel .slide.is-active {
       opacity: 1;
-      transform: scale(1);
+      transform: translate(-50%, -50%) scale(1);
       z-index: 2;
     }
 
+    /* Foreground card (empty) sits above carousel so layout is preserved and text remains readable */
     .intro-right .right-foreground { position: relative; z-index: 3; background: transparent; display:flex; align-items:center; justify-content:center; }
+    .right-foreground .empty-card { width: 100%; height: 100%; min-height: 320px; border-radius: 1rem; background: rgba(255,255,255,0.00); box-shadow: 0 8px 30px -10px rgba(0,0,0,0.12); border: 1px solid rgba(0,0,0,0.04); }
 
-    .right-foreground .empty-card {
-      width: 100%;
-      height: 100%;
-      min-height: 360px;
-      border-radius: 1rem;
-      background: rgba(255,255,255,0.00);
-      box-shadow: 0 8px 30px -10px rgba(0,0,0,0.12);
-      border: 1px solid rgba(0,0,0,0.04);
-    }
+    .intro-left { background: transparent; z-index: 4; position: relative; padding-right: 1rem; }
 
-    .intro-left { background: transparent; z-index: 4; position: relative; }
-
+    /* responsive adjustments */
+    @media (max-width: 1280px) { :root { --carousel-bleed: 160px; } }
     @media (max-width: 1024px) {
+      :root { --carousel-bleed: 0px; } /* no bleed on tablet and smaller; carousel becomes full-width of column */
       .intro-right .intro-carousel {
-        position: absolute;
         left: 0;
         right: 0;
-        width: 100%;
       }
-      .intro-right .intro-carousel .slide { background-position: center 20%; }
-      .intro-right .intro-carousel::after { background: rgba(0,0,0,0.36); }
       .intro-grid { grid-template-columns: 1fr; }
       .intro-right { order: 2; min-height: 300px; }
+      .intro-left { order: 1; }
+      .intro-right .intro-carousel .slide { left: 50%; transform: translate(-50%, -50%) scale(1.02); width: 100%; }
+      .intro-right .intro-carousel::after { background: rgba(0,0,0,0.36); border-radius: 0; }
     }
-
     @media (max-width: 640px) {
+      :root { --carousel-bleed: 0px; }
       .intro-right .intro-carousel::after { background: rgba(0,0,0,0.46); }
     }
 
     @media (prefers-reduced-motion: reduce) {
       .intro-right .intro-carousel .slide { transition: none !important; opacity: 0 !important; }
-      .intro-right .intro-carousel .slide:first-child { opacity: 1 !important; z-index: 2 !important; }
+      .intro-right .intro-carousel .slide:first-child { opacity: 1 !important; z-index: 2 !important; transform: translate(-50%, -50%) scale(1) !important; }
     }
 
     main.relative { position: relative; z-index: 1; }
@@ -250,10 +258,10 @@
             </div>
           </div>
 
-          <!-- RIGHT: carousel confined to this column and stretched to bottom of column -->
+          <!-- RIGHT: carousel confined to this column and stretched (bleed left) -->
           <div class="intro-right">
 
-            <!-- CAROUSEL: fills the right column area (kept images in original formats) -->
+            <!-- CAROUSEL: fills the right column area, bleeds left; images kept in original formats -->
             <div class="intro-carousel" aria-hidden="true">
               <div class="slide is-active" style="background-image: url('assets.LNPG/a8a63ff5-3ed2-44f1-a124-7430ced43885.jpg');"></div>
               <div class="slide"          style="background-image: url('assets.LNPG/WhatsApp Image 2025-11-19 at 17.34.32_9fe16f1e.jpg');"></div>
@@ -590,7 +598,7 @@
     showConsent();
   </script>
 
-  <!-- Carousel JS: targets slides inside .intro-right; slower rotation and longer crossfade for higher yield -->
+  <!-- Carousel JS: targets slides inside .intro-right; slower rotation and long gentle crossfade -->
   <script>
   (function(){
     const carousel = document.querySelector('.intro-right .intro-carousel');
@@ -599,19 +607,17 @@
     const slides = Array.from(carousel.querySelectorAll('.slide'));
     if(slides.length <= 1) return;
 
-    // SLOWER rotation: change interval to 8000ms (8s) to give each image more presence
-    const intervalMs = 8000; // 8 seconds
+    // slower rotation to increase "yield" — 8s per slide
+    const intervalMs = 8000;
     let idx = 0;
     let timer = null;
 
     // init: ensure exactly one active and preload images
     slides.forEach((s,i) => {
       s.classList.toggle('is-active', i === 0);
+      // preload background image to reduce flicker
       const bg = s.style.backgroundImage.replace(/url\(|\)|"/g, '');
-      if(bg) {
-        const img = new Image();
-        img.src = bg;
-      }
+      if(bg) { const img = new Image(); img.src = bg; }
     });
 
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -642,7 +648,7 @@
 
     window.addEventListener('load', start);
     window.addEventListener('resize', () => {
-      // no-op placeholder; CSS handles layout responsiveness
+      // no-op; layout handled by CSS (keeps aspect, responsive bleed)
     });
 
     start();
