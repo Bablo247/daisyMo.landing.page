@@ -30,6 +30,7 @@
 
   <!-- Tailwind CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
+
   <script>
     tailwind.config = {
       theme: {
@@ -58,7 +59,7 @@
     .header-blur { transition: background-color .45s ease, box-shadow .45s ease, border-color .45s ease, backdrop-filter .45s ease; }
     .header-blur.is-scrolled { background: rgba(255,255,255,0.95); border-color: rgba(0,0,0,0.08); box-shadow: 0 10px 30px -12px rgba(0,0,0,.18); backdrop-filter: saturate(1.2) blur(10px); }
     .brand-logo { transition: height .3s ease, filter .3s ease; height: 4rem; width: auto; }
-    .is-scrolled .brand-logo{ height: 4rem; filter: saturate(1.1); }
+    .is-scrolled .brand-logo{ height: 4rem; filter: saturate(1.1); } /* prevent shrink on scroll */
     .service-card { transition: transform .35s ease, box-shadow .35s ease; cursor: pointer; min-height: 360px; display:flex; flex-direction:column; justify-content:flex-end; position:relative; overflow:hidden; }
     .service-card:hover { transform: translateY(-6px) scale(1.02); box-shadow: 0 16px 40px -12px rgba(37,99,235,0.18) }
     .overlay-gradient::after { content:''; position:absolute; inset:0; background: linear-gradient(to bottom, rgba(0,0,0,0) 45%, rgba(0,0,0,0.48) 100%); pointer-events:none; transition: opacity .3s ease; opacity:0; }
@@ -70,84 +71,74 @@
     /* GA consent banner */
     #consentBanner { position: fixed; bottom: 18px; left: 18px; right: 18px; max-width: 800px; margin: 0 auto; z-index: 80; }
 
-    /* Carousel: confined to container */
-    .bg-carousel {
+    /***** Carousel Scoped to RIGHT COLUMN *****/
+    /* the right column wrapper */
+    .intro-right { position: relative; overflow: visible; }
+
+    /* carousel lives inside the right column and fills it */
+    .intro-right .intro-carousel {
       position: absolute;
-      inset: 0;
-      z-index: 0; /* behind the section content */
-      overflow: visible;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 0; /* behind the right-column content */
       pointer-events: none;
-      display: flex;
-      justify-content: center;
-      align-items: stretch;
     }
 
-    .bg-carousel .carousel-inner {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      max-width: 80rem; /* Tailwind max-w-7xl = 80rem */
-      margin-left: auto;
-      margin-right: auto;
-      padding-left: 1rem;  /* px-4 */
-      padding-right: 1rem;
-    }
-    @media (min-width: 768px) {
-      .bg-carousel .carousel-inner { padding-left: 1.5rem; padding-right: 1.5rem; } /* md:px-6 */
-    }
-
-    .bg-carousel .carousel-inner .slide {
+    .intro-right .intro-carousel .slide {
       position: absolute;
       inset: 0;
       background-position: center center;
       background-size: cover;
       background-repeat: no-repeat;
-      opacity: 0;                     /* hidden by default */
+      opacity: 0;
       transform: scale(1.02);
       transition: opacity 900ms ease-in-out, transform 800ms ease;
       will-change: opacity, transform;
-      z-index: 0;
     }
 
-    /* overlay attached to the inner container, sits above slides but below content */
-    .bg-carousel .carousel-inner::after {
+    /* subtle overlay inside the right column */
+    .intro-right .intro-carousel::after {
       content: "";
       position: absolute;
       inset: 0;
-      background: rgba(0,0,0,0.32); /* darkness — increase to make images darker */
+      background: rgba(0,0,0,0.32); /* adjust darkness */
       pointer-events: none;
-      z-index: 2;
+      z-index: 1;
     }
 
-    /* active slide fully visible (overlay will darken it) */
-    .bg-carousel .carousel-inner .slide.is-active {
+    /* visible slide */
+    .intro-right .intro-carousel .slide.is-active {
       opacity: 1;
       transform: scale(1);
-      z-index: 1; /* below overlay (z=2) so overlay darkens it */
+      z-index: 0;
     }
 
-    /* Ensure intro content sits above overlay */
-    #intro > .relative.z-10 { position: relative; z-index: 3; }
+    /* ensure the right-column foreground content (card/image) sits above the carousel */
+    .intro-right .right-foreground { position: relative; z-index: 2; background: transparent; }
 
-    /* Responsive adjustments */
+    /* keep left text unaffected — give it a plain background */
+    .intro-left { background: transparent; z-index: 3; position: relative; }
+
+    /* for small screens tweak the focus and overlay */
     @media (max-width: 1024px) {
-      .bg-carousel .carousel-inner .slide { background-position: center 20%; }
-      .bg-carousel .carousel-inner::after { background: rgba(0,0,0,0.36); }
+      .intro-right .intro-carousel .slide { background-position: center 20%; }
+      .intro-right .intro-carousel::after { background: rgba(0,0,0,0.40); }
     }
-
     @media (max-width: 640px) {
-      .bg-carousel .carousel-inner::after { background: rgba(0,0,0,0.40); }
-      /* Optional: hide on low-power devices (uncomment if desired) */
-      /* .bg-carousel { display: none; } */
+      .intro-right .intro-carousel::after { background: rgba(0,0,0,0.46); }
+      /* optionally hide the carousel on tiny screens to save bandwidth */
+      /* .intro-right .intro-carousel { display: none; } */
     }
 
     /* Respect reduced motion */
     @media (prefers-reduced-motion: reduce) {
-      .bg-carousel .carousel-inner .slide { transition: none !important; opacity: 0 !important; }
-      .bg-carousel .carousel-inner .slide:first-child { opacity: 1 !important; }
+      .intro-right .intro-carousel .slide { transition: none !important; opacity: 0 !important; }
+      .intro-right .intro-carousel .slide:first-child { opacity: 1 !important; }
     }
 
-    /* Keep main stacking sane */
+    /* ensure stacking elsewhere remains sane */
     main.relative { position: relative; z-index: 1; }
   </style>
 
@@ -199,7 +190,7 @@
         </a>
       </div>
 
-      <nav class="hidden md:flex items-center gap-6 text-small text-gray-700" role="navigation" aria-label="Main">
+      <nav class="hidden md:flex items-center gap-6 text-sm text-gray-700" role="navigation" aria-label="Main">
         <a href="https://bablo247.github.io/daisysolo/" class="hover:text-blueAccent transition">Self by DMC</a>
         <a href="https://bablo247.github.io/daisycollective/" class="hover:text-blueAccent transition">DM Collective</a>
         <a href="#contact" class="hover:text-blueAccent transition">Contact</a>
@@ -225,22 +216,10 @@
 
   <main id="main" class="mt-6 relative">
     <section id="intro" class="relative">
+      <div class="max-w-7xl mx-auto px-4 md:px-6 py-16 md:py-24 grid md:grid-cols-2 gap-12 items-center">
 
-      <!-- BACKGROUND CAROUSEL (confined to container) -->
-      <div class="bg-carousel absolute inset-0" aria-hidden="true">
-        <div class="carousel-inner relative w-full max-w-7xl mx-auto h-full">
-          <!-- slides (kept in original formats) -->
-          <div class="slide is-active" style="background-image: url('assets.LNPG/a8a63ff5-3ed2-44f1-a124-7430ced43885.jpg');"></div>
-          <div class="slide"          style="background-image: url('assets.LNPG/WhatsApp Image 2025-11-19 at 17.34.32_9fe16f1e.jpg');"></div>
-          <div class="slide"          style="background-image: url('assets.LNPG/WhatsApp Image 2025-11-19 at 17.34.33_a5cc0da1.jpg');"></div>
-          <div class="slide"          style="background-image: url('assets.LNPG/WhatsApp Image 2025-11-19 at 17.34.35_344561ca.jpg');"></div>
-          <div class="slide"          style="background-image: url('assets.LNPG/2dff7f6f-9a87-445b-beb9-707355642fd3.jpg');"></div>
-          <div class="slide"          style="background-image: url('assets.LNPG/WhatsApp Image 2025-11-21 at 09.27.46_84f86004.jpg');"></div>
-        </div>
-      </div>
-
-      <div class="relative z-10 max-w-7xl mx-auto px-4 md:px-6 py-16 md:py-24 grid md:grid-cols-2 gap-12 items-center">
-        <div>
+        <!-- LEFT: plain text column -->
+        <div class="intro-left">
           <h1 class="font-display text-3xl md:text-5xl font-semibold leading-tight text-gray-900 tracking-tight">
             One Studio, Two Spaces — <span class="text-blueAccent">DaisyMo Collective</span> &amp; <span class="text-blueAccent">Self by DMC</span>
           </h1>
@@ -252,16 +231,31 @@
           </div>
         </div>
 
-       <!-- <div class="relative">
-          <div class="aspect-[4/3] rounded-3xl overflow-hidden ring-1 ring-black/10 shadow-elevated">
-            <picture>
-              <source srcset="assets.LNPG/WhatsApp Image 2025-11-21 at 09.27.46_84f86004.jpg" type="image/webp">
-              <img class="w-full h-full object-cover" src="assets.LNPG/WhatsApp Image 2025-11-21 at 09.27.46_84f86004.jpg" alt="Podcast studio with microphones and lighting setup" loading="lazy" width="1200" height="900"/>
-            </picture>
-          </div>
-        </div>
-      </div> -->
+        <!-- RIGHT: carousel confined to this column, with the existing card sitting above it -->
+        <div class="intro-right">
 
+          <!-- CAROUSEL: fills the right column area (kept images in original formats) -->
+          <div class="intro-carousel" aria-hidden="true">
+            <div class="slide is-active" style="background-image: url('assets.LNPG/a8a63ff5-3ed2-44f1-a124-7430ced43885.jpg');"></div>
+            <div class="slide"          style="background-image: url('assets.LNPG/WhatsApp Image 2025-11-19 at 17.34.32_9fe16f1e.jpg');"></div>
+            <div class="slide"          style="background-image: url('assets.LNPG/WhatsApp Image 2025-11-19 at 17.34.33_a5cc0da1.jpg');"></div>
+            <div class="slide"          style="background-image: url('assets.LNPG/WhatsApp Image 2025-11-19 at 17.34.35_344561ca.jpg');"></div>
+            <div class="slide"          style="background-image: url('assets.LNPG/2dff7f6f-9a87-445b-beb9-707355642fd3.jpg');"></div>
+            <div class="slide"          style="background-image: url('assets.LNPG/c364c6a1-8435-4395-a662-c4b1288b5ca1.jpg');"></div>
+          </div>
+
+          <!-- Foreground card/image (unchanged visual card but sits above carousel) -->
+          <div class="right-foreground">
+            <div class="aspect-[4/3] rounded-3xl overflow-hidden ring-1 ring-black/10 shadow-elevated">
+              <picture>
+                <source srcset="assets.LNPG/WhatsApp Image 2025-11-21 at 09.27.46_84f86004.jpg" type="image/webp">
+                <img class="w-full h-full object-cover" src="assets.LNPG/WhatsApp Image 2025-11-21 at 09.27.46_84f86004.jpg" alt="Podcast studio with microphones and lighting setup" loading="lazy" width="1200" height="900"/>
+              </picture>
+            </div>
+          </div>
+
+        </div>
+      </div>
     </section>
 
     <section id="branches" class="relative py-16 md:py-24 bg-gray-50">
@@ -580,10 +574,10 @@
     showConsent();
   </script>
 
-  <!-- Confined carousel JS (fixed selectors + 2s interval) -->
+  <!-- Carousel JS: targets slides inside .intro-right; 2s rotation -->
   <script>
   (function(){
-    const carousel = document.querySelector('#intro .bg-carousel .carousel-inner');
+    const carousel = document.querySelector('.intro-right .intro-carousel');
     if(!carousel) return;
 
     const slides = Array.from(carousel.querySelectorAll('.slide'));
@@ -593,22 +587,24 @@
     let idx = 0;
     let timer = null;
 
-    // initialize: ensure only the first slide has is-active
+    // init
     slides.forEach((s,i) => {
       s.classList.toggle('is-active', i === 0);
-      s.style.zIndex = i === 0 ? '1' : '0';
+      s.style.zIndex = i === 0 ? '0' : '0';
+      // ensure background images are loaded by forcing browser to preload via Image object (optional but reduces flash)
+      const bg = s.style.backgroundImage.replace(/url\(|\)|"/g, '');
+      if(bg) {
+        const img = new Image();
+        img.src = bg;
+      }
     });
 
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     function goTo(next){
       if(next === idx) return;
-      // remove active from current
       slides[idx].classList.remove('is-active');
-      slides[idx].style.zIndex = '0';
-      // add to next
       slides[next].classList.add('is-active');
-      slides[next].style.zIndex = '1';
       idx = next;
     }
 
@@ -629,16 +625,10 @@
       if(document.hidden) stop(); else start();
     });
 
-    // start
+    window.addEventListener('load', start);
     start();
-
-    // quick safety: if images haven't loaded, ensure slides still cycle once loaded
-    window.addEventListener('load', ()=> { start(); });
   })();
   </script>
 
 </body>
 </html>
-
-
-
