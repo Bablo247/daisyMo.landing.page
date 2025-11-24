@@ -71,7 +71,7 @@
     /* GA consent banner */
     #consentBanner { position: fixed; bottom: 18px; left: 18px; right: 18px; max-width: 800px; margin: 0 auto; z-index: 80; }
 
-    /***** Carousel Scoped to RIGHT COLUMN, BLEED LEFT, ADAPTIVE (show whole images) *****/
+    /***** Carousel Scoped to RIGHT COLUMN, BLEED LEFT, COVER MODE *****/
     :root { --carousel-bleed: 220px; --carousel-aspect: 4 / 3; }
 
     .intro-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: stretch; }
@@ -92,28 +92,27 @@
     }
 
     /*
-      Adaptive behavior: use background-size: contain so the whole image fits.
-      We also provide a subtle letterbox background to frame images when aspect differs.
-      Each slide is centered and sized so it does not get cropped; instead we show the entire image.
+      COVER behavior: images fill the slide frame and may be cropped (preferred).
+      Transition eased with cubic-bezier; crossfade + slight scale for depth.
     */
     .intro-right .intro-carousel .slide {
       position: absolute;
       top: 50%;
       left: 50%;
       width: calc(100% + var(--carousel-bleed));
-      /* keep a stable aspect ratio for the slide "frame" */
+      /* stable frame aspect */
       aspect-ratio: var(--carousel-aspect);
       transform: translate(-50%, -50%) scale(1.02);
       background-position: center center;
       background-repeat: no-repeat;
-      background-size: contain; /* <-- important: show the entire image */
+      background-size: cover; /* <-- CHANGED: fill and crop */
       opacity: 0;
       transition: opacity 700ms cubic-bezier(.22,.8,.1,1), transform 700ms cubic-bezier(.22,.8,.1,1);
       will-change: opacity, transform;
       z-index: 0;
       border-radius: 0.75rem;
       box-shadow: 0 8px 30px -12px rgba(0,0,0,0.18);
-      background-color: rgba(10,10,10,0.06); /* subtle letterbox fill */
+      background-color: rgba(10,10,10,0.04);
     }
 
     /* overlay so content remains readable */
@@ -133,7 +132,7 @@
       z-index: 2;
     }
 
-    /* Foreground card (empty) sits above carousel so layout is preserved and text remains readable */
+    /* Foreground card sits above carousel so layout is preserved and text remains readable */
     .intro-right .right-foreground { position: relative; z-index: 3; background: transparent; display:flex; align-items:center; justify-content:center; }
     .right-foreground .empty-card { width: 100%; height: 100%; min-height: 320px; border-radius: 1rem; background: rgba(255,255,255,0.00); box-shadow: 0 8px 30px -10px rgba(0,0,0,0.12); border: 1px solid rgba(0,0,0,0.04); }
 
@@ -603,7 +602,7 @@
     const slides = Array.from(carousel.querySelectorAll('.slide'));
     if(slides.length <= 1) return;
 
-    // rotation: 8s per slide (increase if you want slower)
+    // rotation: 8s per slide
     const intervalMs = 8000;
     let idx = 0;
     let timer = null;
@@ -644,7 +643,7 @@
 
     window.addEventListener('load', start);
     window.addEventListener('resize', () => {
-      // layout handled by CSS; nothing else required
+      // layout handled by CSS
     });
 
     start();
