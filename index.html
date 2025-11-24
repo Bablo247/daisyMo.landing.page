@@ -105,7 +105,7 @@
       transform: translate(-50%, -50%) scale(1.02);
       background-position: center center;
       background-repeat: no-repeat;
-      background-size: cover; /* <-- CHANGED: fill and crop */
+      background-size: cover; /* <-- cover mode */
       opacity: 0;
       transition: opacity 700ms cubic-bezier(.22,.8,.1,1), transform 700ms cubic-bezier(.22,.8,.1,1);
       will-change: opacity, transform;
@@ -138,7 +138,7 @@
 
     .intro-left { background: transparent; z-index: 4; position: relative; padding-right: 1rem; }
 
-    /* RESPONSIVE: remove bleed on smaller screens and let slide become column-width */
+    /* ===== ADAPTIVE / MOBILE FIXES: make slide fill the whole right column (no 'card' container feel) ===== */
     @media (max-width: 1280px) { :root { --carousel-bleed: 160px; } }
     @media (max-width: 1024px) {
       :root { --carousel-bleed: 0px; }
@@ -146,18 +146,33 @@
       .intro-grid { grid-template-columns: 1fr; }
       .intro-right { order: 2; min-height: 300px; }
       .intro-left { order: 1; }
-      .intro-right .intro-carousel .slide { left: 50%; transform: translate(-50%, -50%) scale(1.02); width: 100%; aspect-ratio: 16 / 9; }
+      /* KEY CHANGE: slides now fully cover the column area (no aspect box) */
+      .intro-right .intro-carousel .slide {
+        position: absolute;
+        inset: 0;                /* full fill of the carousel container */
+        width: 100%;
+        height: 100%;
+        aspect-ratio: auto;
+        transform: none;        /* no centering transform needed */
+        border-radius: 0;       /* remove rounded corner look on small screens */
+        box-shadow: none;
+        background-position: center center;
+        background-size: cover; /* keeps COVER */
+      }
       .intro-right .intro-carousel::after { background: linear-gradient(180deg, rgba(0,0,0,0.16), rgba(0,0,0,0.36)); border-radius: 0; }
     }
     @media (max-width: 640px) {
       :root { --carousel-bleed: 0px; }
       .intro-right .intro-carousel::after { background: linear-gradient(180deg, rgba(0,0,0,0.22), rgba(0,0,0,0.46)); }
+      /* further ensure full-bleed on tiny screens */
+      .intro-right .intro-carousel { left: 0; right: 0; }
+      .right-foreground .empty-card { min-height: 220px; border-radius: 0; border: none; box-shadow: none; }
     }
 
-    /* Respect reduced motion */
+    /* Respect reduced motion: fallback to first image only */
     @media (prefers-reduced-motion: reduce) {
       .intro-right .intro-carousel .slide { transition: none !important; opacity: 0 !important; }
-      .intro-right .intro-carousel .slide:first-child { opacity: 1 !important; z-index: 2 !important; transform: translate(-50%, -50%) scale(1) !important; }
+      .intro-right .intro-carousel .slide:first-child { opacity: 1 !important; z-index: 2 !important; transform: none !important; }
     }
 
     main.relative { position: relative; z-index: 1; }
@@ -310,7 +325,7 @@
       </div>
     </section>
 
-    <!-- OPEN HOUSE SECTION (unchanged) -->
+    <!-- OPEN HOUSE (unchanged) -->
     <section id="open-house" class="max-w-7xl mx-auto px-4 md:px-6 py-12">
       <div class="relative mb-4 hidden" id="liveBanner">
         <div class="bg-red-600 text-white text-center py-3 rounded-xl shadow-lg font-semibold animate-pulse flex items-center justify-between gap-4">
