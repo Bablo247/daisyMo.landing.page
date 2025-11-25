@@ -3,139 +3,197 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>DaisyMo Collective — Two Spaces</title>
+  <title>DaisyMo Collective — Two Creative Spaces: Studio Services & Self-Booths</title>
 
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+  <!-- Primary SEO meta -->
+  <meta name="description" content="DaisyMo — One studio with two unique creative spaces. Book premium production shoots, rent gear, or capture stunning portraits using our professional-grade self-portrait booths." />
+  <meta name="keywords" content="photography studio, self-portrait booth, studio rental, podcast studio, creative studio, DaisyMo Collective" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://bablo247.github.io/daisyMo.landing.page/" />
 
-  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="DaisyMo Collective — Studio Services & Self-Booths" />
+  <meta property="og:description" content="Premium creative studio services and hands-on self-portrait booths — all in one modern studio space." />
+  <meta property="og:image" content="https://bablo247.github.io/daisyMo.landing.page/assets/daisymo-logo.jpg" />
+  <meta property="og:url" content="https://bablo247.github.io/daisyMo.landing.page/" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="DaisyMo Collective — Studio & Self-Portrait Booths" />
+  <meta name="twitter:description" content="Book premium studio sessions or capture stunning self-portraits in minutes." />
+  <meta name="twitter:image" content="https://bablo247.github.io/daisyMo.landing.page/assets/daisymo-logo.jpg" />
+
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
 
   <style>
-    body { overflow-x: hidden; }
+    body {
+      margin: 0;
+      font-family: "Montserrat", sans-serif;
+      background: #f5f5f5;
+      color: #111;
+    }
 
-    .intro-grid {
+    header {
+      padding: 20px;
+      text-align: center;
+      background: #ffffff;
+      border-bottom: 2px solid #eee;
+    }
+
+    header img {
+      max-width: 160px;
+    }
+
+    .hero {
+      padding: 60px 20px;
+      text-align: center;
+      background: #fff;
+    }
+
+    .hero h1 {
+      font-size: 2.4rem;
+      font-weight: 700;
+      margin-bottom: 15px;
+    }
+
+    .hero p {
+      font-size: 1.1rem;
+      max-width: 650px;
+      margin: auto;
+    }
+
+    .section-title {
+      text-align: center;
+      margin-top: 60px;
+      margin-bottom: 20px;
+      font-size: 1.8rem;
+      font-weight: 700;
+    }
+
+    .sections-wrapper {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 2rem;
-      align-items: stretch;
+      gap: 30px;
+      padding: 20px;
+      max-width: 1100px;
+      margin: auto;
     }
 
-    /* RIGHT COLUMN — FULL HEIGHT CAROUSEL */
-    .intro-right {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      min-height: 520px;
-      overflow: hidden;
-      border-radius: 1rem;
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 25px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+      text-align: center;
     }
 
-    /* Carousel container */
-    .intro-carousel {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      z-index: 1;
+    .card img {
+      max-width: 100%;
+      border-radius: 10px;
+      margin-bottom: 15px;
     }
 
-    /* SLIDES — fill full column */
-    .intro-carousel .slide {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      background-size: cover !important;
-      background-position: center !important;
-      opacity: 0;
-      transition: opacity 0.8s ease;
+    .card h3 {
+      font-size: 1.35rem;
+      margin-bottom: 10px;
     }
 
-    .slide.is-active {
-      opacity: 1;
+    .card p {
+      font-size: 0.98rem;
+      color: #333;
     }
 
-    /* MOBILE – stack vertically */
-    @media (max-width: 768px) {
-      .intro-grid {
-        grid-template-columns: 1fr;
-      }
+    footer {
+      text-align: center;
+      margin-top: 60px;
+      padding: 30px;
+      background: #111;
+      color: white;
+      font-size: 0.9rem;
+    }
 
-      .intro-right {
-        height: 380px;
-        border-radius: 0.75rem;
-      }
+    .countdown {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-top: 20px;
+      color: #d63384;
+    }
 
-      .intro-carousel .slide {
-        border-radius: 0.75rem;
+    @media (min-width: 768px) {
+      .sections-wrapper {
+        grid-template-columns: repeat(2, 1fr);
       }
     }
   </style>
 </head>
 
-<body class="bg-gray-50 font-body text-gray-900">
+<body>
 
-  <main class="mt-10">
-    <section id="intro" class="max-w-7xl mx-auto px-4 md:px-6 pb-16">
-      
-      <div class="intro-grid">
+  <header>
+    <img src="assets/daisymo-logo.jpg" alt="DaisyMo Collective Logo" />
+  </header>
 
-        <!-- LEFT COLUMN -->
-        <div class="intro-left">
-          <h1 class="font-display text-4xl md:text-5xl font-semibold leading-tight text-gray-900">
-            One Studio, Two Spaces — 
-            <span class="text-blue-500">DaisyMo Collective</span> & 
-            <span class="text-blue-500">Self by DMC</span>
-          </h1>
+  <section class="hero">
+    <h1>DaisyMo Collective — One Studio, Two Creative Spaces</h1>
+    <p>Explore our professional production studio for premium shoots, or step into our self-portrait booths for high-quality portraits at your convenience.</p>
 
-          <p class="mt-4 text-lg text-gray-700 max-w-xl">
-            Book premium professional sessions, rent our creative studios, or explore our DIY self-portrait booths.
-          </p>
+    <div class="countdown" id="launchCountdown"></div>
+  </section>
 
-          <div class="mt-6">
-            <a href="#branches"
-               class="px-6 py-3 bg-white border border-gray-300 rounded-xl shadow-sm hover:bg-gray-100 transition">
-               Explore Services
-            </a>
-          </div>
-        </div>
+  <h2 class="section-title">Choose Your Experience</h2>
 
-        <!-- RIGHT COLUMN — FULL CAROUSEL -->
-        <div class="intro-right">
-          <div class="intro-carousel">
-            
-            <div class="slide is-active" style="background-image:url('assets.LNPG/a8a63ff5-3ed2-44f1-a124-7430ced43885.jpg');"></div>
+  <div class="sections-wrapper">
 
-            <div class="slide" style="background-image:url('assets.LNPG/WhatsApp Image 2025-11-19 at 17.34.32_9fe16f1e.jpg');"></div>
+    <!-- STUDIO SERVICES -->
+    <div class="card">
+      <img src="assets/studio.jpg" alt="Professional Studio Service">
+      <h3>💼 Studio Services</h3>
+      <p>
+        A premium production environment for photographers, brands, creatives, and businesses.  
+        Book full studio sessions, rent high-end gear, or use our podcast/video setup.
+      </p>
+    </div>
 
-            <div class="slide" style="background-image:url('assets.LNPG/WhatsApp Image 2025-11-19 at 17.34.33_a5cc0da1.jpg');"></div>
+    <!-- SELF PORTRAIT BOOTHS -->
+    <div class="card">
+      <img src="assets/self-booth.jpg" alt="Self Portrait Booth">
+      <h3>📸 Self-Portrait Booths</h3>
+      <p>
+        Designed for simplicity and creativity.  
+        Take studio-grade portraits in minutes using automated lighting, background, and capture controls.
+      </p>
+    </div>
 
-            <div class="slide" style="background-image:url('assets.LNPG/WhatsApp Image 2025-11-19 at 17.34.35_344561ca.jpg');"></div>
+  </div>
 
-            <div class="slide" style="background-image:url('assets.LNPG/2dff7f6f-9a87-445b-beb9-707355642fd3.jpg');"></div>
-
-            <div class="slide" style="background-image:url('assets.LNPG/WhatsApp Image 2025-11-21 at 09.27.46_84f86004.jpg');"></div>
-
-            <div class="slide" style="background-image:url('assets.LNPG/c364c6a1-8435-4395-a662-c4b1288b5ca1.jpg');"></div>
-          
-          </div>
-        </div>
-
-      </div>
-    </section>
-  </main>
+  <footer>
+    © 2025 DaisyMo Collective — All Rights Reserved.
+  </footer>
 
   <script>
-    /* SIMPLE CAROUSEL ROTATION */
-    let slides = document.querySelectorAll(".slide");
-    let index = 0;
+    // LAUNCH COUNTDOWN (JULY 13, 2025)
+    const launchDate = new Date("2025-07-13T00:00:00").getTime();
 
     setInterval(() => {
-      slides[index].classList.remove("is-active");
-      index = (index + 1) % slides.length;
-      slides[index].classList.add("is-active");
-    }, 4000);
+      const now = Date.now();
+      const diff = launchDate - now;
+
+      if (diff <= 0) {
+        document.getElementById("launchCountdown").innerHTML = "We Are Live! 🎉";
+        return;
+      }
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((diff / (1000 * 60)) % 60);
+      const seconds = Math.floor((diff / 1000) % 60);
+
+      document.getElementById("launchCountdown").innerHTML =
+        `${days}d ${hours}h ${minutes}m ${seconds}s`;
+    }, 1000);
   </script>
 
 </body>
