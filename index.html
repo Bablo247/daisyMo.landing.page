@@ -112,6 +112,55 @@
     }
 
     main.relative { position: relative; z-index: 1; }
+    .amenities-section {
+  padding: 60px 0;
+  max-width: 1100px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.amenities-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 30px;
+}
+
+.amenities-grid {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: repeat(3, 1fr);
+  padding: 0 20px;
+}
+
+.amenity-item {
+  background: #f7f7f7;
+  padding: 14px 18px;
+  border-radius: 10px;
+  text-align: left;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  line-height: 1.4;
+}
+
+/* Tablet view */
+@media (max-width: 900px) {
+  .amenities-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Mobile view */
+@media (max-width: 600px) {
+  .amenities-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .amenities-title {
+    font-size: 1.6rem;
+  }
+}  
   </style>
 </head>
 
@@ -169,6 +218,32 @@
             </p>
             <div class="mt-8 flex flex-wrap items-center gap-3">
               <a href="#branches" class="px-5 py-3 rounded-xl bg-white border border-outline text-gray-900 hover:bg-gray-100 transition">Explore Services</a>
+              <section class="amenities-section">
+            <h2 class="amenities-title">Amenities</h2>
+            <div class="amenities-grid">
+              <div class="amenity-item">📶 Free WIFI</div>
+              <div class="amenity-item">🛋️ Resting Area / Lobby</div>
+              <div class="amenity-item">💡 Vanity Table with Makeup Lighting</div>
+              <div class="amenity-item">🪟 Fully Curtained Changing Area</div>
+              <div class="amenity-item">🚻 Restroom</div>
+              <div class="amenity-item">⬜ Large White Cyclorama Wall (Infinity Wall)</div>
+              <div class="amenity-item">📸 7–107 inch Rolling Paper Backdrops (Black, Blue, Pink & more)</div>
+              <div class="amenity-item">🔢 Marquee Numbers (0–9)</div>
+              <div class="amenity-item">🛋️ Love Seat</div>
+              <div class="amenity-item">🪑 Single Chair</div>
+              <div class="amenity-item">📦 3 Different-Size White Photography Boxes</div>
+              <div class="amenity-item">🎛️ 3 C-Stands</div>
+              <div class="amenity-item">👗 Clothing Rack</div>
+              <div class="amenity-item">🪞 2 Wheeled Reflector Boards (White & Black)</div>
+              <div class="amenity-item">💡 Different-Size Softboxes</div>
+              <div class="amenity-item">🔌 Extension Cords</div>
+              <div class="amenity-item">🥤 Hot/Cold Drinking Water</div>
+              <div class="amenity-item">❄️ Drink Cooler</div>
+              <div class="amenity-item">🖥️ Monitor + Tethering Cables</div>
+              <div class="amenity-item">🎬 Rolling Backdrop (2-sided)</div>
+              <div class="amenity-item">☕ Coffee, Snacks & Soft Drinks</div>
+            </div>
+            </section> 
             </div>
           </div>
 
@@ -567,4 +642,5 @@
 
 </body>
 </html>
+
 
