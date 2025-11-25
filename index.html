@@ -86,7 +86,7 @@
       left: calc(-1 * var(--carousel-bleed));
       height: 100%;
       z-index: 0;
-      pointer-events: none;
+      pointer-events: none; /* content overlays remain interactive */
       overflow: visible;
       display: block;
     }
@@ -167,6 +167,9 @@
       /* further ensure full-bleed on tiny screens */
       .intro-right .intro-carousel { left: 0; right: 0; }
       .right-foreground .empty-card { min-height: 220px; border-radius: 0; border: none; box-shadow: none; }
+      /* ensure images feel full-bleed on very small devices */
+      .intro-right .intro-carousel { top: 0; bottom: 0; height: auto; }
+      .intro-right .intro-carousel .slide { background-size: cover; background-position: center; }
     }
 
     /* Respect reduced motion: fallback to first image only */
@@ -198,6 +201,7 @@
   <script>
     window._ga_consent = window._ga_consent || { granted: false };
     function loadGA(){
+      // load only once
       if(window._ga_consent.granted) return;
       const id = 'G-XXXXXXXXXX'; // replace
       const s = document.createElement('script'); s.async = true; s.src = `https://www.googletagmanager.com/gtag/js?id=${id}`; document.head.appendChild(s);
@@ -518,11 +522,15 @@
         mobileMenuBtn.setAttribute('aria-expanded', !expanded);
         mobileMenu.classList.toggle('hidden');
         const svg = mobileMenuBtn.querySelector('svg');
-        if (svg) { svg.innerHTML = !expanded ? '<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>' : '<path stroke-linecap="round" stroke-linejoin="round" d="M4 8h16M4 16h16" />'; }
+        if (svg) {
+          svg.innerHTML = !expanded
+            ? '<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>'
+            : '<path stroke-linecap="round" stroke-linejoin="round" d="M4 8h16M4 16h16" />';
+        }
       });
     }
 
-    // Open House countdown + ICS (unchanged)
+    // Open House countdown + ICS (fixed ICS newline join)
     (function(){
       const eventISO = '2025-11-29T13:00:00-06:00';
       const eventEndISO = '2025-11-29T17:00:00-06:00';
@@ -585,8 +593,8 @@
           `DESCRIPTION:${eventDesc}`,
           `LOCATION:${eventLocation}`,'END:VEVENT','END:VCALENDAR'
         ];
-        const blob = new Blob([icsLines.join('\
-')], { type: 'text/calendar;charset=utf-8' });
+        // use '\n' explicitly (was broken)
+        const blob = new Blob([icsLines.join('\n')], { type: 'text/calendar;charset=utf-8' });
         const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'daisymo-open-house.ics'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000);
       });
     })();
@@ -594,14 +602,15 @@
     // Map toggle
     document.getElementById('liveMapBtn')?.addEventListener('click', (e)=>{ e.preventDefault(); document.getElementById('map').classList.toggle('hidden'); window.location.hash = '#map'; });
 
-    // Consent banner logic
+    // Consent banner logic (simplified/robust)
     const consentBanner = document.getElementById('consentBanner');
     const acceptBtn = document.getElementById('acceptGA');
     const rejectBtn = document.getElementById('rejectGA');
     function showConsent(){
       const seen = localStorage.getItem('daisymo_ga_consent');
       if(seen === null){ consentBanner.classList.remove('hidden'); }
-      else if(seen === 'granted'){ window._ga_consent.granted = false; loadGA(); }
+      else if(seen === 'granted'){ loadGA(); } // if user already granted, load GA immediately
+      // if 'denied' — do nothing
     }
     acceptBtn?.addEventListener('click', ()=>{ localStorage.setItem('daisymo_ga_consent','granted'); consentBanner.classList.add('hidden'); loadGA(); });
     rejectBtn?.addEventListener('click', ()=>{ localStorage.setItem('daisymo_ga_consent','denied'); consentBanner.classList.add('hidden'); });
@@ -626,8 +635,12 @@
     slides.forEach((s,i) => {
       s.classList.toggle('is-active', i === 0);
       // preload background image to reduce flicker
-      const bg = s.style.backgroundImage.replace(/url\(|\)|"/g, '');
-      if(bg) { const img = new Image(); img.src = bg; }
+      const styleBg = s.style.backgroundImage || '';
+      const bg = styleBg.replace(/url\(|\)|"/g, '').trim();
+      if(bg){
+        // encode whitespace safely in case file names include spaces
+        try { const img = new Image(); img.src = encodeURI(bg); } catch(e){}
+      }
     });
 
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -658,7 +671,7 @@
 
     window.addEventListener('load', start);
     window.addEventListener('resize', () => {
-      // layout handled by CSS
+      // layout handled by CSS; keep for possible future adaptions
     });
 
     start();
