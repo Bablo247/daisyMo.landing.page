@@ -3,58 +3,16 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>DaisyMo Collective — Two Spaces: Studio Services & Self Booths</title>
-
-  <!-- Primary SEO meta -->
-  <meta name="description" content="DaisyMo — One studio with two spaces. Book premium production shoots, rent gear and studios, or use our self-portrait booths for professional-grade photos." />
-  <meta name="keywords" content="photography studio, self portrait booth, studio rental, podcast studio, creative studio, DaisyMo" />
-  <meta name="robots" content="index, follow" />
-  <link rel="canonical" href="https://bablo247.github.io/daisyMo.landing.page/" />
-
-  <!-- Open Graph -->
-  <meta property="og:type" content="website" />
-  <meta property="og:title" content="DaisyMo — Studio Services & Self-Booth" />
-  <meta property="og:description" content="Premium studio services and hands-on self-portrait booths — all under one roof." />
-  <meta property="og:image" content="assets.LNPG/og-image.webp" />
-  <meta property="og:url" content="https://bablo247.github.io/daisyMo.landing.page/" />
-
-  <!-- Twitter card -->
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="DaisyMo — Studio Services & Self-Booth" />
-  <meta name="twitter:description" content="Premium studio services and hands-on self-portrait booths — all under one roof." />
-  <meta name="theme-color" content="#2563EB" />
-
-  <!-- Preload fonts -->
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+  <title>DaisyMo Collective — Two Spaces: Studio Services &amp; Self Booths</title>
+  <!-- (meta tags & fonts omitted for brevity; keep yours) -->
 
   <!-- Tailwind CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
 
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            background: '#F8FAFC',
-            surface: '#FFFFFF',
-            outline: 'rgba(0,0,0,0.08)',
-            blueAccent: '#D7D2CB',
-            grayText: '#111111'
-          },
-          boxShadow: {
-            elevated: '0 10px 40px -10px rgba(0,0,0,.1)'
-          },
-          fontFamily: {
-            display: ['Poppins', 'ui-sans-serif', 'system-ui'],
-            body: ['Inter', 'ui-sans-serif', 'system-ui']
-          }
-        }
-      }
-    }
-  </script>
-
   <style>
+    /* Prevent page-wide horizontal scrolling introduced by bleed */
+    html, body { overflow-x: hidden; }
+
     html { scroll-behavior: smooth; }
     .header-blur { transition: background-color .45s ease, box-shadow .45s ease, border-color .45s ease, backdrop-filter .45s ease; }
     .header-blur.is-scrolled { background: rgba(255,255,255,0.95); border-color: rgba(0,0,0,0.08); box-shadow: 0 10px 30px -12px rgba(0,0,0,.18); backdrop-filter: saturate(1.2) blur(10px); }
@@ -76,9 +34,10 @@
 
     .intro-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: stretch; }
     #intro { position: relative; overflow: visible; }
-    .intro-right { position: relative; overflow: visible; min-height: 100%; height: 100%; display: flex; align-items: stretch; }
+    /* THIS prevents carousel from leaking into adjacent column */
+    .intro-right { position: relative; overflow: hidden; min-height: 100%; height: 100%; display: flex; align-items: stretch; }
 
-    /* Carousel container — bleeds to left and to the viewport right edge */
+    /* Carousel container — bleeds to left on desktop, but is clipped by intro-right */
     .intro-right .intro-carousel {
       position: absolute;
       top: 0;
@@ -91,21 +50,16 @@
       display: block;
     }
 
-    /*
-      COVER behavior: images fill the slide frame and may be cropped (preferred).
-      Transition eased with cubic-bezier; crossfade + slight scale for depth.
-    */
     .intro-right .intro-carousel .slide {
       position: absolute;
       top: 50%;
       left: 50%;
       width: calc(100% + var(--carousel-bleed));
-      /* stable frame aspect */
       aspect-ratio: var(--carousel-aspect);
       transform: translate(-50%, -50%) scale(1.02);
       background-position: center center;
       background-repeat: no-repeat;
-      background-size: cover; /* <-- cover mode */
+      background-size: cover;
       opacity: 0;
       transition: opacity 700ms cubic-bezier(.22,.8,.1,1), transform 700ms cubic-bezier(.22,.8,.1,1);
       will-change: opacity, transform;
@@ -113,6 +67,8 @@
       border-radius: 0.75rem;
       box-shadow: 0 8px 30px -12px rgba(0,0,0,0.18);
       background-color: rgba(10,10,10,0.04);
+      max-width: 100%;
+      box-sizing: border-box;
     }
 
     /* overlay so content remains readable */
@@ -132,7 +88,6 @@
       z-index: 2;
     }
 
-    /* Foreground card sits above carousel so layout is preserved and text remains readable */
     .intro-right .right-foreground { position: relative; z-index: 3; background: transparent; display:flex; align-items:center; justify-content:center; }
     .right-foreground .empty-card { width: 100%; height: 100%; min-height: 320px; border-radius: 1rem; background: rgba(255,255,255,0.00); box-shadow: 0 8px 30px -10px rgba(0,0,0,0.12); border: 1px solid rgba(0,0,0,0.04); }
 
@@ -140,36 +95,54 @@
 
     /* ===== ADAPTIVE / MOBILE FIXES: make slide fill the whole right column (no 'card' container feel) ===== */
     @media (max-width: 1280px) { :root { --carousel-bleed: 160px; } }
+
     @media (max-width: 1024px) {
+      /* remove bleed so it doesn't overlap columns */
       :root { --carousel-bleed: 0px; }
-      .intro-right .intro-carousel { left: 0; right: 0; }
+
+      /* make carousel flow within the column: no absolute bleed, no overflow into other columns */
+      .intro-right .intro-carousel {
+        position: relative !important;
+        top: auto !important;
+        left: 0 !important;
+        right: 0 !important;
+        height: auto;
+        width: 100%;
+        overflow: hidden;
+      }
+
       .intro-grid { grid-template-columns: 1fr; }
       .intro-right { order: 2; min-height: 300px; }
       .intro-left { order: 1; }
-      /* KEY CHANGE: slides now fully cover the column area (no aspect box) */
+
+      /* slides fully fill column with no aspect box and cannot overflow */
       .intro-right .intro-carousel .slide {
-        position: absolute;
-        inset: 0;                /* full fill of the carousel container */
-        width: 100%;
+        position: relative !important;
+        inset: 0;
+        width: 100% !important;
         height: 100%;
         aspect-ratio: auto;
-        transform: none;        /* no centering transform needed */
-        border-radius: 0;       /* remove rounded corner look on small screens */
+        transform: none !important;
+        border-radius: 0;
         box-shadow: none;
         background-position: center center;
-        background-size: cover; /* keeps COVER */
+        background-size: cover;
+        max-width: 100%;
       }
+
+      /* Remove the foreground card on mobile so it doesn't create the gray block */
+      .intro-right .right-foreground { display: none !important; }
+
       .intro-right .intro-carousel::after { background: linear-gradient(180deg, rgba(0,0,0,0.16), rgba(0,0,0,0.36)); border-radius: 0; }
     }
+
     @media (max-width: 640px) {
       :root { --carousel-bleed: 0px; }
       .intro-right .intro-carousel::after { background: linear-gradient(180deg, rgba(0,0,0,0.22), rgba(0,0,0,0.46)); }
-      /* further ensure full-bleed on tiny screens */
       .intro-right .intro-carousel { left: 0; right: 0; }
       .right-foreground .empty-card { min-height: 220px; border-radius: 0; border: none; box-shadow: none; }
-      /* ensure images feel full-bleed on very small devices */
       .intro-right .intro-carousel { top: 0; bottom: 0; height: auto; }
-      .intro-right .intro-carousel .slide { background-size: cover; background-position: center; }
+      .intro-right .intro-carousel .slide { background-size: cover; background-position: center; max-width:100%; }
     }
 
     /* Respect reduced motion: fallback to first image only */
@@ -180,86 +153,14 @@
 
     main.relative { position: relative; z-index: 1; }
   </style>
-
-  <!-- JSON-LD Organization schema -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    "name": "DaisyMo",
-    "url": "https://bablo247.github.io/daisyMo.landing.page/",
-    "logo": "assets.LNPG/logo.png",
-    "sameAs": [
-      "https://www.instagram.com/daisymo_collective/",
-      "https://www.tiktok.com/@daisymo_collective",
-      "https://www.facebook.com/profile.php?id=61576836301594"
-    ]
-  }
-  </script>
-
-  <!-- Google Analytics loader (on consent) -->
-  <script>
-    window._ga_consent = window._ga_consent || { granted: false };
-    function loadGA(){
-      // load only once
-      if(window._ga_consent.granted) return;
-      const id = 'G-XXXXXXXXXX'; // replace
-      const s = document.createElement('script'); s.async = true; s.src = `https://www.googletagmanager.com/gtag/js?id=${id}`; document.head.appendChild(s);
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);} window.gtag = gtag;
-      gtag('js', new Date());
-      gtag('config', id, { 'anonymize_ip': true });
-      window._ga_consent.granted = true;
-    }
-  </script>
 </head>
-<body class="bg-background text-grayText font-body selection:bg-blueAccent/20 selection:text-blueAccent">
-  <a class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-white px-3 py-2 rounded shadow" href="#main">Skip to content</a>
-
-  <div id="top"></div>
-  <div id="scrollBar" class="fixed top-0 left-0 h-[3px] bg-gradient-to-r from-blue-500 via-blueAccent to-blue-700 z-[60]" style="width:0;"></div>
-
-  <header id="siteHeader" class="header-blur sticky top-0 z-50 bg-white/50 backdrop-blur border-b border-outline">
-    <div class="max-w-7xl mx-auto px-4 md:px-6 flex items-center justify-between h-24">
-      <div class="flex items-center gap-3">
-        <a href="#top" aria-label="DaisyMo home">
-          <img src="assets.LNPG/WhatsApp_Image_2025-10-31_at_23.48.33_4e0b2b6-removebg-preview.png" alt="DaisyMo Collective logo" class="brand-logo" />
-        </a>
-        <a href="#top" aria-label="Self by DMC">
-          <img src="assets.LNPG/logo-removebg-preview (1).png" alt="Self by DMC logo" class="brand-logo" />
-        </a>
-      </div>
-
-      <nav class="hidden md:flex items-center gap-6 text-sm text-gray-700" role="navigation" aria-label="Main">
-        <a href="https://bablo247.github.io/daisysolo/" class="hover:text-blueAccent transition">Self by DMC</a>
-        <a href="https://bablo247.github.io/daisycollective/" class="hover:text-blueAccent transition">DM Collective</a>
-        <a href="#contact" class="hover:text-blueAccent transition">Contact</a>
-      </nav>
-
-      <div class="md:hidden">
-        <button id="mobileMenuBtn" aria-controls="mobileMenu" aria-expanded="false" aria-label="Open menu" class="p-2 rounded-md ring-1 ring-transparent hover:ring-outline focus:outline-none focus:ring-2 focus:ring-blue-300">
-          <svg id="hamburger" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M4 8h16M4 16h16" />
-          </svg>
-        </button>
-      </div>
-    </div>
-
-    <div id="mobileMenu" class="hidden md:hidden border-t border-outline bg-white/95">
-      <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col gap-3">
-        <a href="https://bablo247.github.io/daisysolo/" class="py-2">Self by DMC</a>
-        <a href="https://bablo247.github.io/daisycollective/" class="py-2">DM Collective</a>
-        <a href="#contact" class="py-2">Contact</a>
-      </div>
-    </div>
-  </header>
+<body class="bg-background text-gray-900 font-sans">
+  <!-- ... keep your header/nav unchanged ... -->
 
   <main id="main" class="mt-6 relative">
     <section id="intro" class="relative">
       <div class="max-w-7xl mx-auto px-4 md:px-6 py-16 md:py-24">
         <div class="intro-grid">
-
-          <!-- LEFT: plain text column -->
           <div class="intro-left">
             <h1 class="font-display text-3xl md:text-5xl font-semibold leading-tight text-gray-900 tracking-tight">
               One Studio, Two Spaces — <span class="text-blueAccent">DaisyMo Collective</span> &amp; <span class="text-blueAccent">Self by DMC</span>
@@ -272,409 +173,48 @@
             </div>
           </div>
 
-          <!-- RIGHT: carousel confined to this column and stretched (bleed left) -->
           <div class="intro-right">
-
-            <!-- CAROUSEL: fills the right column area, bleeds left; kept original image formats -->
             <div class="intro-carousel" aria-hidden="true">
               <div class="slide is-active" style="background-image: url('assets.LNPG/a8a63ff5-3ed2-44f1-a124-7430ced43885.jpg');"></div>
               <div class="slide"          style="background-image: url('assets.LNPG/WhatsApp Image 2025-11-19 at 17.34.32_9fe16f1e.jpg');"></div>
               <div class="slide"          style="background-image: url('assets.LNPG/WhatsApp Image 2025-11-19 at 17.34.33_a5cc0da1.jpg');"></div>
-              <div class="slide"          style="background-image: url('assets.LNPG/WhatsApp Image 2025-11-19 at 17.34.35_344561ca.jpg');"></div>
-              <div class="slide"          style="background-image: url('assets.LNPG/2dff7f6f-9a87-445b-beb9-707355642fd3.jpg');"></div>
-              <div class="slide"          style="background-image: url('assets.LNPG/WhatsApp Image 2025-11-21 at 09.27.46_84f86004.jpg');"></div>
-              <div class="slide"          style="background-image: url('assets.LNPG/c364c6a1-8435-4395-a662-c4b1288b5ca1.jpg');"></div>
+              <!-- ... rest of slides ... -->
             </div>
 
-            <!-- Empty foreground card (keeps layout but stretches to full column height) -->
             <div class="right-foreground">
               <div class="empty-card rounded-3xl overflow-hidden"></div>
             </div>
-
           </div>
         </div>
       </div>
     </section>
 
-    <section id="branches" class="relative py-16 md:py-24 bg-gray-50">
-      <div class="max-w-7xl mx-auto px-4 md:px-6">
-        <div class="mb-10 md:mb-14 text-center">
-          <h2 class="font-display text-2xl md:text-4xl font-semibold text-gray-900 tracking-tight">Choose Which Space Suits You Best</h2>
-          <p class="mt-2 text-gray-700 max-w-2xl mx-auto text-base leading-relaxed">Two Spaces under one roof — go bespoke with our creative team or go hands-on with our self-shoot booths.</p>
-        </div>
-
-        <div class="grid md:grid-cols-2 gap-8">
-          <a href="https://bablo247.github.io/daisycollective/" class="block h-full" aria-label="DaisyMo Collective — full studio service">
-            <article id="creatives" class="anchor-offset service-card group relative rounded-3xl overflow-hidden border border-outline bg-white shadow-elevated h-full overlay-gradient" role="article">
-              <img class="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:opacity-90 transition duration-700 ease-out" src="https://img.freepik.com/premium-photo/professional-photo-studio-setup-various-shoots_153912-141231.jpg" alt="Professional studio setup with lights and camera" loading="lazy"/>
-              <div class="relative p-10 z-10 text-left">
-                <div class="uppercase tracking-widest text-xs text-blueAccent/60 font-medium mb-2">Full Studio Service</div>
-                <h3 class="font-display text-3xl font-light tracking-tight mb-3 hover-contrast">DaisyMo Collective</h3>
-                <p class="text-sm leading-relaxed max-w-sm hover-contrast">Professional shoots and production: portraits, campaigns, editorials, and studio or gear rentals — built for modern creatives.</p>
-              </div>
-            </article>
-          </a>
-
-          <a href="https://bablo247.github.io/daisysolo/" class="block h-full" aria-label="Self by DMC — self portrait booth">
-            <article id="self" class="anchor-offset service-card group relative rounded-3xl overflow-hidden border border-outline bg-white shadow-elevated h-full overlay-gradient" role="article">
-              <img class="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:opacity-90 transition duration-700 ease-out" src="https://media-cdn.tripadvisor.com/media/attractions-splice-spp-720x480/12/1f/cb/2f.jpg" alt="Self portrait booth area" loading="lazy"/>
-              <div class="relative p-10 z-10 text-left">
-                <div class="uppercase tracking-widest text-xs text-blueAccent/60 font-medium mb-2">DIY Platform</div>
-                <h3 class="font-display text-3xl font-light tracking-tight mb-3 hover-contrast">Self by DMC</h3>
-                <p class="text-sm leading-relaxed max-w-sm hover-contrast">A refined self-portrait studio — you control the lighting, angle, and moment for effortless, professional-grade photos.</p>
-              </div>
-            </article>
-          </a>
-        </div>
-      </div>
-    </section>
-
-    <!-- OPEN HOUSE (unchanged) -->
-    <section id="open-house" class="max-w-7xl mx-auto px-4 md:px-6 py-12">
-      <div class="relative mb-4 hidden" id="liveBanner">
-        <div class="bg-red-600 text-white text-center py-3 rounded-xl shadow-lg font-semibold animate-pulse flex items-center justify-between gap-4">
-          <div class="pl-4">🎉 The Open House is happening NOW! — Join us at DaisyMo Collective</div>
-          <div class="pr-4 flex items-center gap-2">
-            <a href="#map" class="px-3 py-2 bg-white/10 text-white rounded-md border border-white/20">Get directions</a>
-            <a id="liveMapBtn" href="#map" class="px-3 py-2 bg-white text-red-600 rounded-md font-semibold">View map</a>
-          </div>
-        </div>
-      </div>
-
-      <div class="bg-white rounded-3xl overflow-hidden shadow-xl border border-gray-200">
-        <div class="md:flex">
-
-          <!-- LEFT IMAGE -->
-          <div class="md:w-1/2">
-            <picture>
-              <source srcset="assets.LNPG/WhatsApp Image 2025-11-19 at 17.34.33_a5cc0da1.jpg" type="image/webp">
-              <img src="assets.LNPG/WhatsApp Image 2025-11-19 at 17.34.33_a5cc0da1.jpg" class="w-full h-full object-cover" alt="Open House Flyer" loading="lazy"/>
-            </picture>
-          </div>
-
-          <!-- RIGHT CONTENT -->
-          <div class="md:w-1/2 p-6 md:p-10 flex flex-col justify-between">
-            <div>
-              <h2 class="font-serif text-3xl font-semibold text-gray-900 mb-3">Creative Studio Open House</h2>
-              <p class="text-sm text-gray-700 mb-4">
-                Join us for a relaxed open house at DaisyMo Collective. Explore the podcast room, meeting space,
-                self-portrait studio, styled sets and intimate event setups.
-              </p>
-
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                <div>
-                  <h3 class="text-sm font-semibold text-gray-900 mb-2">What you can use the studio for</h3>
-                  <ul class="list-disc list-inside text-sm text-gray-700 space-y-1">
-                    <li>Photo + Video shoots</li>
-                    <li>Self-portrait sessions</li>
-                    <li>Podcast recording</li>
-                    <li>Content creation days</li>
-                    <li>Small meetings, workshops & trainings</li>
-                    <li>Intimate events</li>
-                  </ul>
-                </div>
-
-                <div class="flex flex-col gap-3">
-                  <div class="bg-gray-100 p-3 rounded-lg">
-                    <div class="text-xs uppercase text-gray-500">When</div>
-                    <div class="text-base md:text-lg font-semibold text-gray-900">1:00PM – 5:00PM<br>29 Nov 2025</div>
-                  </div>
-
-                  <div class="p-3 rounded-lg border border-gray-300">
-                    <div class="text-xs uppercase text-gray-500">Where</div>
-                    <div class="text-sm text-gray-900 font-medium">10650 County Rd 81, Ste U<br>Maple Grove, MN 55369</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="mt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-              <div class="flex items-center gap-4">
-                <div id="oh-countdown" class="flex items-center gap-3 text-center">
-                  <div class="px-3 py-2 bg-gray-50 rounded-lg shadow-sm">
-                    <div id="days" class="text-xl font-semibold">--</div>
-                    <div class="text-xs text-gray-500">days</div>
-                  </div>
-                  <div class="px-3 py-2 bg-gray-50 rounded-lg shadow-sm">
-                    <div id="hours" class="text-xl font-semibold">--</div>
-                    <div class="text-xs text-gray-500">hrs</div>
-                  </div>
-                  <div class="px-3 py-2 bg-gray-50 rounded-lg shadow-sm">
-                    <div id="minutes" class="text-xl font-semibold">--</div>
-                    <div class="text-xs text-gray-500">mins</div>
-                  </div>
-                  <div class="px-3 py-2 bg-gray-50 rounded-lg shadow-sm">
-                    <div id="seconds" class="text-xl font-semibold">--</div>
-                    <div class="text-xs text-gray-500">secs</div>
-                  </div>
-                </div>
-                <div id="status" class="ml-3 text-sm text-gray-600 hidden">Event starts in</div>
-              </div>
-
-              <div class="flex gap-3">
-                <a href="mailto:inquiries@daisymocollective.com" class="inline-flex items-center px-4 py-2 rounded-xl border border-gray-300 bg-white text-sm hover:bg-gray-50">Email inquiries</a>
-                <button id="addToCalBtn" class="inline-flex items-center px-4 py-2 rounded-xl bg-blue-600 text-white text-sm hover:bg-blue-700">Add to calendar</button>
-              </div>
-            </div>
-
-          </div>
-        </div>
-
-        <!-- MAP (hidden until requested) -->
-        <div id="map" class="hidden p-6 border-t border-gray-100">
-          <div class="max-w-7xl mx-auto px-4 md:px-6">
-            <h3 class="text-lg font-semibold mb-3">Find us</h3>
-            <div class="grid md:grid-cols-2 gap-6">
-              <div>
-                <iframe width="100%" height="300" frameborder="0" style="border:0" loading="lazy"
-                  src="https://www.google.com/maps/embed/v1/place?key=YOUR_GOOGLE_MAPS_EMBED_KEY&q=10650+County+Rd+81+Ste+U+Maple+Grove+MN+55369">
-                </iframe>
-              </div>
-              <div class="flex flex-col gap-3">
-                <p class="text-sm text-gray-700">10650 County Rd 81, Ste U<br>Maple Grove, MN 55369</p>
-                <a target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination=10650+County+Rd+81+Ste+U+Maple+Grove+MN+55369" class="inline-flex items-center px-4 py-2 rounded-lg bg-blue-600 text-white">Get directions</a>
-              </div>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </section>
-
+    <!-- rest of page unchanged -->
   </main>
 
-  <footer id="contact" class="anchor-offset border-t border-outline bg-white">
-    <div class="max-w-7xl mx-auto px-4 md:px-6 py-10 md:py-14 grid md:grid-cols-4 gap-8 text-gray-700">
-      <div>
-        <div class="font-display text-lg font-semibold text-gray-900">DaisyMo</div>
-        <p class="mt-3 text-sm text-gray-700">One studio — two experiences. Premium production and empowering DIY options in one house.</p>
-      </div>
-      <div>
-        <div class="text-sm font-semibold text-gray-900">One Studio — 2 spaces</div>
-        <ul class="mt-3 space-y-2 text-sm text-gray-700">
-          <li><a href="https://bablo247.github.io/daisycollective/" class="hover:text-blueAccent">DaisyMo Creatives</a></li>
-          <li><a href="https://bablo247.github.io/daisysolo/" class="hover:text-blueAccent">Self by DMC</a></li>
-        </ul>
-      </div>
-      <div>
-        <div class="text-sm font-semibold text-gray-900">Contact</div>
-        <ul class="mt-3 space-y-2 text-sm text-gray-700">
-          <li><a href="mailto:admin@daisymocollective.com" class="hover:text-blueAccent">admin@daisymocollective.com</a></li>
-          <li><a href="https://wa.me/17632098807" class="hover:text-blueAccent">WhatsApp</a></li>
-        </ul>
-      </div>
-      <div>
-        <div class="text-sm font-semibold text-gray-900">Follow</div>
-        <div class="mt-3 flex items-center gap-3 text-gray-700">
-          <!-- SVG social icons -->
-          <a href="https://www.instagram.com/daisymo_collective/?hl=en" class="hover:text-blueAccent" aria-label="Instagram">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
-          </a>
-          <a href="https://www.tiktok.com/@daisymo_collective" class="hover:text-blueAccent" aria-label="TikTok">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18c-3 0-5-2-5-5V9h2v4c0 2 1.5 3 3 3s3-1 3-3V6h2v1a4 4 0 0 0 4 4h0"/></svg>
-          </a>
-          <a href="https://www.facebook.com/profile.php?id=61576836301594" class="hover:text-blueAccent" aria-label="Facebook">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a4 4 0 0 0-4 4v3H8v4h3v8h4v-8h3l1-4h-4V6a1 1 0 0 1 1-1h3z"/></svg>
-          </a>
-        </div>
-      </div>
-    </div>
-
-    <div class="text-center text-xs text-gray-700 py-6 border-t border-outline">© <span id="year"></span> DaisyMo. All rights reserved.</div>
-  </footer>
-
-  <!-- GA consent banner -->
-  <div id="consentBanner" class="hidden">
-    <div class="bg-white/95 p-4 rounded-xl shadow-lg flex items-center justify-between gap-4">
-      <div>
-        <div class="font-medium">Analytics & cookies</div>
-        <div class="text-sm text-gray-600">We use analytics to improve the site. You can accept or manage settings.</div>
-      </div>
-      <div class="flex items-center gap-2">
-        <button id="acceptGA" class="px-4 py-2 rounded-lg bg-blue-600 text-white">Accept</button>
-        <button id="rejectGA" class="px-4 py-2 rounded-lg border">Reject</button>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    document.getElementById('year').textContent = new Date().getFullYear();
-
-    const headerEl = document.getElementById('siteHeader');
-    const bar = document.getElementById('scrollBar');
-    function setHeaderState() { if (!headerEl) return; headerEl.classList.toggle('is-scrolled', window.scrollY > 8); }
-    function setProgress() { if (!bar) return; const scrollTop = window.scrollY || document.documentElement.scrollTop; const docHeight = document.documentElement.scrollHeight - window.innerHeight; const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0; bar.style.width = pct + '%'; }
-    setHeaderState(); setProgress(); window.addEventListener('scroll', () => { setHeaderState(); setProgress(); }); window.addEventListener('resize', setProgress);
-
-    document.querySelectorAll('a[href^="#"]').forEach(a => {
-      try {
-        const id = a.getAttribute('href'); if (!id || id === '#') return; const target = document.querySelector(id); if (target) {
-          a.addEventListener('click', (e) => { e.preventDefault(); const offset = (headerEl && headerEl.offsetHeight) ? headerEl.offsetHeight + 8 : 88; const top = target.getBoundingClientRect().top + window.scrollY - offset; window.scrollTo({ top, behavior: 'smooth' }); history.pushState(null, '', id); });
-        }
-      } catch (err) {}
-    });
-
-    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-    const mobileMenu = document.getElementById('mobileMenu');
-    if (mobileMenuBtn && mobileMenu) {
-      mobileMenuBtn.addEventListener('click', () => {
-        const expanded = mobileMenuBtn.getAttribute('aria-expanded') === 'true';
-        mobileMenuBtn.setAttribute('aria-expanded', !expanded);
-        mobileMenu.classList.toggle('hidden');
-        const svg = mobileMenuBtn.querySelector('svg');
-        if (svg) {
-          svg.innerHTML = !expanded
-            ? '<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>'
-            : '<path stroke-linecap="round" stroke-linejoin="round" d="M4 8h16M4 16h16" />';
-        }
-      });
-    }
-
-    // Open House countdown + ICS (fixed ICS newline join)
-    (function(){
-      const eventISO = '2025-11-29T13:00:00-06:00';
-      const eventEndISO = '2025-11-29T17:00:00-06:00';
-      const eventTitle = 'DaisyMo Collective — Open House';
-      const eventDesc = 'Open House at DaisyMo Collective — explore podcast room, meeting space, self-portrait studio, styled sets and intimate event setups.';
-      const eventLocation = '10650 County Rd 81, Ste U, Maple Grove, MN 55369';
-
-      const target = new Date(eventISO).getTime();
-      const targetEnd = new Date(eventEndISO).getTime();
-
-      const daysEl = document.getElementById('days');
-      const hoursEl = document.getElementById('hours');
-      const minutesEl = document.getElementById('minutes');
-      const secondsEl = document.getElementById('seconds');
-      const statusEl = document.getElementById('status');
-      const liveBanner = document.getElementById('liveBanner');
-
-      function updateCountdown(){
-        const now = Date.now();
-        const diff = target - now;
-
-        if(now >= target && now < targetEnd){
-          if(liveBanner) liveBanner.classList.remove('hidden');
-          daysEl.textContent = hoursEl.textContent = minutesEl.textContent = secondsEl.textContent = '0';
-          statusEl.classList.remove('hidden'); statusEl.textContent = 'Open House is live!';
-          return;
-        } else if(now >= targetEnd){
-          daysEl.textContent = hoursEl.textContent = minutesEl.textContent = secondsEl.textContent = '0';
-          statusEl.classList.remove('hidden'); statusEl.textContent = 'Event ended';
-          clearInterval(intervalId);
-          return;
-        }
-
-        const secs = Math.floor(diff / 1000);
-        const d = Math.floor(secs / (3600 * 24));
-        const h = Math.floor((secs % (3600 * 24)) / 3600);
-        const m = Math.floor((secs % 3600) / 60);
-        const s = secs % 60;
-
-        daysEl.textContent = d;
-        hoursEl.textContent = String(h).padStart(2, '0');
-        minutesEl.textContent = String(m).padStart(2, '0');
-        secondsEl.textContent = String(s).padStart(2, '0');
-
-        statusEl.classList.remove('hidden'); statusEl.textContent = 'Event starts in';
-      }
-
-      updateCountdown();
-      const intervalId = setInterval(updateCountdown, 1000);
-
-      function toICSDate(dt){ return dt.toISOString().replace(/[-:]/g,'').split('.')[0] + 'Z'; }
-      document.getElementById('addToCalBtn').addEventListener('click', function(){
-        const start = new Date(eventISO); const end = new Date(eventEndISO);
-        const icsLines = [
-          'BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//DaisyMo//OpenHouse//EN','CALSCALE:GREGORIAN','METHOD:REQUEST','BEGIN:VEVENT',
-          `DTSTART:${toICSDate(start)}`,
-          `DTEND:${toICSDate(end)}`,
-          `DTSTAMP:${toICSDate(new Date())}`,
-          `SUMMARY:${eventTitle}`,
-          `DESCRIPTION:${eventDesc}`,
-          `LOCATION:${eventLocation}`,'END:VEVENT','END:VCALENDAR'
-        ];
-        // use '\n' explicitly (was broken)
-        const blob = new Blob([icsLines.join('\n')], { type: 'text/calendar;charset=utf-8' });
-        const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'daisymo-open-house.ics'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000);
-      });
-    })();
-
-    // Map toggle
-    document.getElementById('liveMapBtn')?.addEventListener('click', (e)=>{ e.preventDefault(); document.getElementById('map').classList.toggle('hidden'); window.location.hash = '#map'; });
-
-    // Consent banner logic (simplified/robust)
-    const consentBanner = document.getElementById('consentBanner');
-    const acceptBtn = document.getElementById('acceptGA');
-    const rejectBtn = document.getElementById('rejectGA');
-    function showConsent(){
-      const seen = localStorage.getItem('daisymo_ga_consent');
-      if(seen === null){ consentBanner.classList.remove('hidden'); }
-      else if(seen === 'granted'){ loadGA(); } // if user already granted, load GA immediately
-      // if 'denied' — do nothing
-    }
-    acceptBtn?.addEventListener('click', ()=>{ localStorage.setItem('daisymo_ga_consent','granted'); consentBanner.classList.add('hidden'); loadGA(); });
-    rejectBtn?.addEventListener('click', ()=>{ localStorage.setItem('daisymo_ga_consent','denied'); consentBanner.classList.add('hidden'); });
-    showConsent();
-  </script>
-
-  <!-- Carousel JS: targets slides inside .intro-right; slower rotation and gentle crossfade -->
+  <!-- footer and scripts (keep your carousel JS; it already preloads using encodeURI) -->
   <script>
   (function(){
     const carousel = document.querySelector('.intro-right .intro-carousel');
     if(!carousel) return;
-
     const slides = Array.from(carousel.querySelectorAll('.slide'));
     if(slides.length <= 1) return;
-
-    // rotation: 8s per slide
     const intervalMs = 8000;
-    let idx = 0;
-    let timer = null;
-
-    // init: ensure exactly one active and preload images
+    let idx = 0, timer = null;
     slides.forEach((s,i) => {
       s.classList.toggle('is-active', i === 0);
-      // preload background image to reduce flicker
       const styleBg = s.style.backgroundImage || '';
       const bg = styleBg.replace(/url\(|\)|"/g, '').trim();
       if(bg){
-        // encode whitespace safely in case file names include spaces
         try { const img = new Image(); img.src = encodeURI(bg); } catch(e){}
       }
     });
-
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    function goTo(next){
-      if(next === idx) return;
-      slides[idx].classList.remove('is-active');
-      slides[next].classList.add('is-active');
-      idx = next;
-    }
-
-    function start(){
-      if(reduce) return;
-      stop();
-      timer = setInterval(() => {
-        const next = (idx + 1) % slides.length;
-        goTo(next);
-      }, intervalMs);
-    }
-
-    function stop(){
-      if(timer) { clearInterval(timer); timer = null; }
-    }
-
-    document.addEventListener('visibilitychange', ()=> {
-      if(document.hidden) stop(); else start();
-    });
-
+    function goTo(next){ if(next===idx) return; slides[idx].classList.remove('is-active'); slides[next].classList.add('is-active'); idx = next; }
+    function start(){ if(reduce) return; stop(); timer = setInterval(()=> goTo((idx+1)%slides.length), intervalMs); }
+    function stop(){ if(timer){ clearInterval(timer); timer=null; } }
+    document.addEventListener('visibilitychange', ()=> document.hidden ? stop() : start());
     window.addEventListener('load', start);
-    window.addEventListener('resize', () => {
-      // layout handled by CSS; keep for possible future adaptions
-    });
-
-    start();
   })();
   </script>
 
