@@ -11,19 +11,6 @@
   <meta name="robots" content="index, follow" />
   <link rel="canonical" href="https://bablo247.github.io/daisyMo.landing.page/" />
 
-  <!-- Open Graph -->
-  <meta property="og:type" content="website" />
-  <meta property="og:title" content="DaisyMo — Studio Services & Self-Booth" />
-  <meta property="og:description" content="Premium studio services and hands-on self-portrait booths — all under one roof." />
-  <meta property="og:image" content="assets.LNPG/og-image.webp" />
-  <meta property="og:url" content="https://bablo247.github.io/daisyMo.landing.page/" />
-
-  <!-- Twitter card -->
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="DaisyMo — Studio Services & Self-Booth" />
-  <meta name="twitter:description" content="Premium studio services and hands-on self-portrait booths — all under one roof." />
-  <meta name="theme-color" content="#2563EB" />
-
   <!-- Preload fonts -->
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
@@ -90,22 +77,38 @@
       opacity: 0;
       transition: opacity 0.8s ease;
       will-change: opacity;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    .intro-carousel .slide.is-active {
-      opacity: 1;
+    .intro-carousel .slide.is-active { opacity: 1; }
+
+    /* IMG fallback inside slide (hidden on desktop, shown on mobile) */
+    .intro-carousel .slide img {
+      display: none;                 /* desktop: use background-image */
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      border-radius: inherit;
     }
 
     /* make the foreground card sit above the carousel on desktop */
     .right-foreground { position: relative; z-index: 3; display:flex; align-items:center; justify-content:center; pointer-events: auto; }
     .right-foreground .empty-card { width: 100%; height: 100%; min-height: 320px; border-radius: 1rem; background: rgba(255,255,255,0.00); box-shadow: 0 8px 30px -10px rgba(0,0,0,0.12); border: 1px solid rgba(0,0,0,0.04); }
 
-    /* MOBILE – stack vertically and adjust height */
+    /* MOBILE – stack vertically and adjust height; switch to <img> fallback so mobiles always show the image */
     @media (max-width: 768px) {
       .intro-grid { grid-template-columns: 1fr; }
       .intro-right { height: 380px; border-radius: 0.75rem; }
-      .intro-carousel .slide { border-radius: 0.75rem; position: relative; }
-      .right-foreground { display: none; } /* hide foreground card on small screens so image is unobstructed */
+      .intro-carousel .slide {
+        position: relative;
+        border-radius: 0.75rem;
+        background-image: none !important; /* avoid double-draw; we'll show the <img> */
+      }
+      .intro-carousel .slide img { display: block; } /* mobile shows the img fallback */
+      .right-foreground { display: none; } /* hide foreground card on small screens */
     }
 
     main.relative { position: relative; z-index: 1; }
@@ -171,23 +174,37 @@
             </div>
           </div>
 
-          <!-- RIGHT COLUMN — FULL CAROUSEL (your corrected carousel integrated) -->
+          <!-- RIGHT COLUMN — FULL CAROUSEL (with mobile <img> fallback) -->
           <div class="intro-right">
-
             <div class="intro-carousel" aria-hidden="true">
-              <div class="slide is-active" style="background-image:url('assets.LNPG/a8a63ff5-3ed2-44f1-a124-7430ced43885.jpg');"></div>
+              <div class="slide is-active" style="background-image:url('assets.LNPG/a8a63ff5-3ed2-44f1-a124-7430ced43885.jpg');">
+                <!-- mobile fallback img (hidden on desktop) -->
+                <img src="assets.LNPG/a8a63ff5-3ed2-44f1-a124-7430ced43885.jpg" alt="DaisyMo slide 1">
+              </div>
 
-              <div class="slide" style="background-image:url('assets.LNPG/WhatsApp Image 2025-11-19 at 17.34.32_9fe16f1e.jpg');"></div>
+              <div class="slide" style="background-image:url('assets.LNPG/WhatsApp Image 2025-11-19 at 17.34.32_9fe16f1e.jpg');">
+                <img src="assets.LNPG/WhatsApp Image 2025-11-19 at 17.34.32_9fe16f1e.jpg" alt="DaisyMo slide 2">
+              </div>
 
-              <div class="slide" style="background-image:url('assets.LNPG/WhatsApp Image 2025-11-19 at 17.34.33_a5cc0da1.jpg');"></div>
+              <div class="slide" style="background-image:url('assets.LNPG/WhatsApp Image 2025-11-19 at 17.34.33_a5cc0da1.jpg');">
+                <img src="assets.LNPG/WhatsApp Image 2025-11-19 at 17.34.33_a5cc0da1.jpg" alt="DaisyMo slide 3">
+              </div>
 
-              <div class="slide" style="background-image:url('assets.LNPG/WhatsApp Image 2025-11-19 at 17.34.35_344561ca.jpg');"></div>
+              <div class="slide" style="background-image:url('assets.LNPG/WhatsApp Image 2025-11-19 at 17.34.35_344561ca.jpg');">
+                <img src="assets.LNPG/WhatsApp Image 2025-11-19 at 17.34.35_344561ca.jpg" alt="DaisyMo slide 4">
+              </div>
 
-              <div class="slide" style="background-image:url('assets.LNPG/2dff7f6f-9a87-445b-beb9-707355642fd3.jpg');"></div>
+              <div class="slide" style="background-image:url('assets.LNPG/2dff7f6f-9a87-445b-beb9-707355642fd3.jpg');">
+                <img src="assets.LNPG/2dff7f6f-9a87-445b-beb9-707355642fd3.jpg" alt="DaisyMo slide 5">
+              </div>
 
-              <div class="slide" style="background-image:url('assets.LNPG/WhatsApp Image 2025-11-21 at 09.27.46_84f86004.jpg');"></div>
+              <div class="slide" style="background-image:url('assets.LNPG/WhatsApp Image 2025-11-21 at 09.27.46_84f86004.jpg');">
+                <img src="assets.LNPG/WhatsApp Image 2025-11-21 at 09.27.46_84f86004.jpg" alt="DaisyMo slide 6">
+              </div>
 
-              <div class="slide" style="background-image:url('assets.LNPG/c364c6a1-8435-4395-a662-c4b1288b5ca1.jpg');"></div>
+              <div class="slide" style="background-image:url('assets.LNPG/c364c6a1-8435-4395-a662-c4b1288b5ca1.jpg');">
+                <img src="assets.LNPG/c364c6a1-8435-4395-a662-c4b1288b5ca1.jpg" alt="DaisyMo slide 7">
+              </div>
             </div>
 
             <!-- Foreground empty card shown on desktop only -->
@@ -523,7 +540,7 @@
     showConsent();
   </script>
 
-  <!-- Carousel rotation script (your corrected, simple rotation) -->
+  <!-- Carousel rotation script (simple rotation) -->
   <script>
     (function(){
       const slides = document.querySelectorAll(".intro-carousel .slide");
@@ -543,7 +560,7 @@
         else timer = setInterval(rotate, 4000);
       });
 
-      // optional: pause on pointer hover (desktop)
+      // pause on pointer hover (desktop)
       const carousel = document.querySelector('.intro-carousel');
       carousel?.addEventListener('mouseenter', () => clearInterval(timer));
       carousel?.addEventListener('mouseleave', () => timer = setInterval(rotate, 4000));
