@@ -112,55 +112,66 @@
     }
 
     main.relative { position: relative; z-index: 1; }
-    .amenities-section {
-  padding: 60px 0;
+      .dropdown-section {
   max-width: 1100px;
-  margin: 0 auto;
-  text-align: center;
-}
-
-.amenities-title {
-  font-size: 2rem;
-  font-weight: 700;
-  margin-bottom: 30px;
-}
-
-.amenities-grid {
-  display: grid;
-  gap: 18px;
-  grid-template-columns: repeat(3, 1fr);
+  margin: 50px auto;
   padding: 0 20px;
 }
 
-.amenity-item {
-  background: #f7f7f7;
-  padding: 14px 18px;
+.dropdown-block {
+  margin-bottom: 25px;
+}
+
+.dropdown-toggle {
+  width: 100%;
+  background: #111;
+  color: #fff;
+  padding: 15px 20px;
+  font-size: 1.2rem;
+  border: none;
   border-radius: 10px;
   text-align: left;
-  font-size: 0.95rem;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  line-height: 1.4;
+  cursor: pointer;
+  transition: 0.3s;
 }
 
-/* Tablet view */
-@media (max-width: 900px) {
-  .amenities-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
+.dropdown-toggle:hover {
+  opacity: 0.9;
 }
 
-/* Mobile view */
+.dropdown-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease;
+  background: #fafafa;
+  border-radius: 10px;
+  margin-top: 10px;
+  padding: 0 15px;
+}
+
+.dropdown-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px 20px;
+  padding: 20px 10px;
+}
+
+.dropdown-item {
+  background: #fff;
+  padding: 12px;
+  border-radius: 8px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.06);
+  font-size: 1rem;
+}
+
 @media (max-width: 600px) {
-  .amenities-grid {
+  .dropdown-grid {
     grid-template-columns: 1fr;
   }
+}
 
-  .amenities-title {
-    font-size: 0.6rem;
-  }
-}  
+
+
   </style>
 </head>
 
@@ -218,30 +229,6 @@
             </p>
             <div class="mt-8 flex flex-wrap items-center gap-3">
               <a href="#branches" class="px-5 py-3 rounded-xl bg-white border border-outline text-gray-900 hover:bg-gray-100 transition">Explore Services</a>
-              <section class="amenities-section">
-            <h2 class="amenities-title">Amenities</h2>
-            <div class="amenities-grid">
-              <div class="amenity-item">📶 Free WIFI</div>
-              <div class="amenity-item">Resting Area / Lobby</div>
-              <div class="amenity-item">Vanity Table with Makeup Lighting</div>
-              <div class="amenity-item">Fully Curtained Changing Area</div>
-              <div class="amenity-item">Restroom</div>
-              <div class="amenity-item">Large White Cyclorama Wall (Infinity Wall)</div>
-              <div class="amenity-item"> 7–107 inch Rolling Paper Backdrops (Black, Blue, Pink & more)</div>
-              <div class="amenity-item">Love Seat</div>
-              <div class="amenity-item">Single Chair</div>
-              <div class="amenity-item">3 C-Stands</div>
-              <div class="amenity-item">Clothing Rack</div>
-              <div class="amenity-item">2 Wheeled Reflector Boards (White & Black)</div>
-              <div class="amenity-item">Different-Size Softboxes to fit your need</div>
-              <div class="amenity-item">Extension Cords</div>
-              <div class="amenity-item">Hot/Cold Drinking Water</div>
-              <div class="amenity-item">Drink Cooler</div>
-              <div class="amenity-item">Monitor + Tethering Cables</div>
-              <div class="amenity-item">Rolling Backdrop (2-sided)</div>
-              <div class="amenity-item">Coffee, Snacks & Soft Drinks</div>
-            </div>
-            </section> 
             </div>
           </div>
 
@@ -318,6 +305,79 @@
             </article>
           </a>
         </div>
+       <section class="dropdown-section">
+
+  <!-- AMENITIES -->
+  <div class="dropdown-block">
+    <button class="dropdown-toggle" onclick="toggleDrop('amenitiesContent', this)">
+      Amenities ▾
+    </button>
+
+    <div class="dropdown-content" id="amenitiesContent">
+      <div class="dropdown-grid">
+        <div class="dropdown-item">Free WIFI</div>
+        <div class="dropdown-item">Resting Area / Lobby</div>
+        <div class="dropdown-item">Vanity Table with Makeup Lighting</div>
+        <div class="dropdown-item">Fully Curtained Changing Area</div>
+        <div class="dropdown-item">Restroom</div>
+        <div class="dropdown-item">Large White Cyclorama Wall (Infinity Wall)</div>
+        <div class="dropdown-item">7–107 inch Rolling Paper Backdrops</div>
+        <div class="dropdown-item">Love Seat</div>
+        <div class="dropdown-item">Single Chair</div>
+        <div class="dropdown-item">3 Different-Size White Photography Boxes</div>
+        <div class="dropdown-item">3 C-Stands</div>
+        <div class="dropdown-item">Clothing Rack</div>
+        <div class="dropdown-item">2 Wheeled Reflector Boards (White & Black)</div>
+        <div class="dropdown-item">Different-Size Softboxes</div>
+        <div class="dropdown-item">Extension Cords</div>
+        <div class="dropdown-item">Hot/Cold Drinking Water</div>
+        <div class="dropdown-item">Drink Cooler</div>
+        <div class="dropdown-item">Monitor + Tethering Cables</div>
+        <div class="dropdown-item">Rolling Backdrop (2-sided)</div>
+        <div class="dropdown-item">Coffee, Snacks & Soft Drinks</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADD-ONS -->
+  <div class="dropdown-block">
+    <button class="dropdown-toggle" onclick="toggleDrop('addonsContent', this)">
+      Add-Ons (Extra Charge) ▾
+    </button>
+
+    <div class="dropdown-content" id="addonsContent">
+      <div class="dropdown-grid">
+        <div class="dropdown-item">Camera Rental</div>
+        <div class="dropdown-item">Tethering iPad (Capture One Mobile)</div>
+        <div class="dropdown-item">Additional Lighting Equipment</div>
+        <div class="dropdown-item">Fog Machine</div>
+        <div class="dropdown-item">Coloured Backdrops on Demand</div>
+        <div class="dropdown-item">Studio Assistant</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STUDIO RULES -->
+  <div class="dropdown-block">
+    <button class="dropdown-toggle" onclick="toggleDrop('rulesContent', this)">
+      Studio Rules ▾
+    </button>
+
+    <div class="dropdown-content" id="rulesContent">
+      <div class="dropdown-grid">
+        <div class="dropdown-item">No smoking inside the studio</div>
+        <div class="dropdown-item">Do not move heavy equipment alone</div>
+        <div class="dropdown-item">Be respectful of studio time limits</div>
+        <div class="dropdown-item">Return all equipment to its place</div>
+        <div class="dropdown-item">No food or drinks near electronic gear</div>
+        <div class="dropdown-item">Handle backdrops carefully</div>
+        <div class="dropdown-item">Report damages immediately</div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
       </div>
     </section>
 
@@ -636,6 +696,18 @@
       carousel?.addEventListener('mouseenter', () => clearInterval(timer));
       carousel?.addEventListener('mouseleave', () => timer = setInterval(rotate, 4000));
     })();
+
+   function toggleDrop(id, button) {
+  const content = document.getElementById(id);
+
+  if (content.style.maxHeight) {
+    content.style.maxHeight = null;
+    button.innerHTML = button.innerHTML.replace("▴", "▾");
+  } else {
+    content.style.maxHeight = content.scrollHeight + "px";
+    button.innerHTML = button.innerHTML.replace("▾", "▴");
+  }
+}
   </script>
 
 </body>
