@@ -106,7 +106,7 @@
       transform: translate(-50%, -50%) scale(1.02);
       background-position: center center;
       background-repeat: no-repeat;
-      background-size: cover;
+      background-size: cover; /* default: cover (fills the column) */
       opacity: 0;
       transition: opacity 700ms cubic-bezier(.22,.8,.1,1), transform 700ms cubic-bezier(.22,.8,.1,1);
       will-change: opacity, transform;
@@ -116,6 +116,8 @@
       background-color: rgba(10,10,10,0.04);
       max-width: 100%;
       box-sizing: border-box;
+      background-size: cover;
+      background-position: center center;
     }
 
     /* overlay so content remains readable */
@@ -298,15 +300,36 @@
           <!-- RIGHT: carousel confined to this column and stretched (bleed left) -->
           <div class="intro-right">
 
-            <!-- CAROUSEL: fills the right column area, bleeds left on desktop -->
+            <!-- CAROUSEL: fills the right column area, bleeds left on desktop.
+                 Added data-pos attributes for focal points and optional data-fit="contain" support. -->
             <div class="intro-carousel" aria-hidden="true">
-              <div class="slide is-active" style="background-image: url('assets.LNPG/a8a63ff5-3ed2-44f1-a124-7430ced43885.jpg');"></div>
-              <div class="slide"          style="background-image: url('assets.LNPG/WhatsApp Image 2025-11-19 at 17.34.32_9fe16f1e.jpg');"></div>
-              <div class="slide"          style="background-image: url('assets.LNPG/WhatsApp Image 2025-11-19 at 17.34.33_a5cc0da1.jpg');"></div>
-              <div class="slide"          style="background-image: url('assets.LNPG/WhatsApp Image 2025-11-19 at 17.34.35_344561ca.jpg');"></div>
-              <div class="slide"          style="background-image: url('assets.LNPG/2dff7f6f-9a87-445b-beb9-707355642fd3.jpg');"></div>
-              <div class="slide"          style="background-image: url('assets.LNPG/WhatsApp Image 2025-11-21 at 09.27.46_84f86004.jpg');"></div>
-              <div class="slide"          style="background-image: url('assets.LNPG/c364c6a1-8435-4395-a662-c4b1288b5ca1.jpg');"></div>
+              <div class="slide is-active"
+                   data-pos="center center"
+                   style="background-image: url('assets.LNPG/a8a63ff5-3ed2-44f1-a124-7430ced43885.jpg');"></div>
+
+              <div class="slide"
+                   data-pos="center center"
+                   style="background-image: url('assets.LNPG/WhatsApp Image 2025-11-19 at 17.34.32_9fe16f1e.jpg');"></div>
+
+              <div class="slide"
+                   data-pos="center top"
+                   style="background-image: url('assets.LNPG/WhatsApp Image 2025-11-19 at 17.34.33_a5cc0da1.jpg');"></div>
+
+              <div class="slide"
+                   data-pos="center center"
+                   style="background-image: url('assets.LNPG/WhatsApp Image 2025-11-19 at 17.34.35_344561ca.jpg');"></div>
+
+              <div class="slide"
+                   data-pos="center center"
+                   style="background-image: url('assets.LNPG/2dff7f6f-9a87-445b-beb9-707355642fd3.jpg');"></div>
+
+              <div class="slide"
+                   data-pos="center center"
+                   style="background-image: url('assets.LNPG/WhatsApp Image 2025-11-21 at 09.27.46_84f86004.jpg');"></div>
+
+              <div class="slide"
+                   data-pos="center center"
+                   style="background-image: url('assets.LNPG/c364c6a1-8435-4395-a662-c4b1288b5ca1.jpg');"></div>
             </div>
 
             <!-- Empty foreground card keeps text readable on desktop but is hidden on small screens -->
@@ -642,7 +665,8 @@
     showConsent();
   </script>
 
-  <!-- Carousel JS: targets slides inside .intro-right; slower rotation and gentle crossfade -->
+  <!-- Carousel JS: targets slides inside .intro-right; slower rotation and gentle crossfade
+       plus per-slide focal-point and optional 'contain' handling -->
   <script>
   (function(){
     const carousel = document.querySelector('.intro-right .intro-carousel');
@@ -651,7 +675,24 @@
     const slides = Array.from(carousel.querySelectorAll('.slide'));
     if(slides.length <= 1) return;
 
-    // rotation: 8s per slide
+    // Apply per-slide focal point and optional contain/fit behaviour
+    slides.forEach(s => {
+      const pos = (s.dataset.pos || '').trim();
+      const fit = (s.dataset.fit || '').trim().toLowerCase();
+      if(fit === 'contain'){
+        s.style.backgroundSize = 'contain';
+        s.style.backgroundRepeat = 'no-repeat';
+        s.style.backgroundPosition = pos || 'center center';
+        // optional: keep subtle background color for letterbox areas
+        s.style.backgroundColor = 'rgba(10,10,10,0.04)';
+      } else {
+        // default: cover but with specified focal point
+        s.style.backgroundSize = 'cover';
+        s.style.backgroundPosition = pos || 'center center';
+      }
+    });
+
+    // rotation settings
     const intervalMs = 8000;
     let idx = 0;
     let timer = null;
@@ -694,7 +735,7 @@
 
     window.addEventListener('load', start);
     window.addEventListener('resize', () => {
-      // layout handled by CSS
+      // layout handled by CSS; kept for future adaptions
     });
 
     start();
