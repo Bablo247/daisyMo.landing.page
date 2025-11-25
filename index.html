@@ -110,6 +110,15 @@
       .intro-carousel .slide img { display: block; } /* mobile shows the img fallback */
       .right-foreground { display: none; } /* hide foreground card on small screens */
     }
+        /* Mobile Fix */
+    @media (max-width: 768px) {
+      .intro-carousel .slide {
+        position: relative;
+        opacity: 1 !important; /* Force visible on mobile */
+        margin-bottom: 0.5rem; 
+      }
+      .intro-carousel .slide img { display: block; width: 100%; height: auto; }
+    }
 
     main.relative { position: relative; z-index: 1; }
       .dropdown-section {
@@ -681,6 +690,17 @@
         slides[index].classList.remove("is-active");
         index = (index + 1) % slides.length;
         slides[index].classList.add("is-active");
+        const slides = document.querySelectorAll('.intro-carousel .slide');
+    let current = 0;
+    const slideInterval = 4000; // 4 seconds
+
+    function nextSlide() {
+      slides[current].classList.remove('is-active');
+      current = (current + 1) % slides.length;
+      slides[current].classList.add('is-active');
+    }
+
+    setInterval(nextSlide, slideInterval);
       };
       // rotate every 4s
       let timer = setInterval(rotate, 4000);
@@ -712,6 +732,7 @@
 
 </body>
 </html>
+
 
 
 
